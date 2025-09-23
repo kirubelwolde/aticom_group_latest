@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { v4 as uuidv4 } from 'uuid'; // Import uuid
 import { 
   Edit, 
   Save, 
@@ -43,6 +42,7 @@ const HeroSlidesAdmin = () => {
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
   const [loading, setLoading] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null); // New state for image file
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({}); // Fallback signed URLs for existing records
   const { toast } = useToast();
 
   const fetchData = async () => {
@@ -80,6 +80,60 @@ const HeroSlidesAdmin = () => {
     fetchData();
   }, []);
 
+  // Fallback: For existing records, generate signed URLs if the stored image_url is a public storage URL or a raw path
+  useEffect(() => {
+    if (!slides || slides.length === 0) return;
+
+    const generateSigned = async () => {
+      const updates: Record<string, string> = {};
+
+      await Promise.all(
+        slides.map(async (s) => {
+          const url = s.image_url;
+          if (!url) return;
+
+          // If already looks like a signed URL, skip
+          if (url.includes('token=')) return;
+
+          // Case 1: public storage URL -> extract path after '/object/public/images/'
+          const publicPrefix = '/storage/v1/object/public/images/';
+          if (url.includes(publicPrefix)) {
+            try {
+              const idx = url.indexOf(publicPrefix);
+              const filePath = url.substring(idx + publicPrefix.length);
+              const { data, error } = await supabase.storage
+                .from('images')
+                .createSignedUrl(filePath, 60 * 60 * 24 * 365);
+              if (!error && data?.signedUrl) {
+                updates[s.id] = data.signedUrl;
+              }
+            } catch {}
+            return;
+          }
+
+          // Case 2: DB stores raw storage path like 'hero_slide_images/xyz.png'
+          if (!url.startsWith('http')) {
+            try {
+              const { data, error } = await supabase.storage
+                .from('images')
+                .createSignedUrl(url, 60 * 60 * 24 * 365);
+              if (!error && data?.signedUrl) {
+                updates[s.id] = data.signedUrl;
+              }
+            } catch {}
+            return;
+          }
+        })
+      );
+
+      if (Object.keys(updates).length > 0) {
+        setSignedUrls((prev) => ({ ...prev, ...updates }));
+      }
+    };
+
+    generateSigned();
+  }, [slides]);
+
   const handleEdit = (slide: HeroSlide) => {
     setEditingSlide({ ...slide });
     setImageFile(null); // Clear image file when editing a new slide
@@ -89,7 +143,7 @@ const HeroSlidesAdmin = () => {
     if (!imageFile) return editingSlide?.image_url || null; // If no new file, return existing URL
 
     const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
+    const fileName = `${crypto.randomUUID()}.${fileExt}`;
     const filePath = `hero_slide_images/${fileName}`;
 
     try {
@@ -99,11 +153,14 @@ const HeroSlidesAdmin = () => {
 
       if (uploadError) throw uploadError;
 
-      const { data: publicUrlData } = supabase.storage
+      // Generate a long-lived signed URL so images are accessible even if the bucket is private
+      const { data: signedUrlData, error: signedUrlError } = await supabase.storage
         .from('images')
-        .getPublicUrl(filePath);
-        
-      return publicUrlData.publicUrl;
+        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year
+
+      if (signedUrlError || !signedUrlData?.signedUrl) throw signedUrlError ?? new Error('Failed to create signed URL');
+
+      return signedUrlData.signedUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
       toast({
@@ -318,7 +375,7 @@ const HeroSlidesAdmin = () => {
                 <div className="w-32 h-24 bg-gray-200 flex items-center justify-center">
                   {slide.image_url ? (
                     <img 
-                      src={slide.image_url} 
+                      src={signedUrls[slide.id] || slide.image_url} 
                       alt={slide.title}
                       className="w-full h-full object-cover"
                     />
