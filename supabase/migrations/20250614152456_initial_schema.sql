@@ -1,0 +1,143 @@
+
+-- Create admin users table for authentication
+CREATE TABLE public.admin_users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create hero slides table
+CREATE TABLE public.hero_slides (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  subtitle TEXT NOT NULL,
+  description TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  order_index INTEGER NOT NULL DEFAULT 0,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create news articles table
+CREATE TABLE public.news_articles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  excerpt TEXT NOT NULL,
+  content TEXT NOT NULL,
+  image_url TEXT,
+  category TEXT NOT NULL,
+  author TEXT NOT NULL,
+  published BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create team members table
+CREATE TABLE public.team_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  position TEXT NOT NULL,
+  department TEXT NOT NULL,
+  bio TEXT NOT NULL,
+  image_url TEXT,
+  experience TEXT,
+  order_index INTEGER NOT NULL DEFAULT 0,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create business sectors table
+CREATE TABLE public.business_sectors (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  features TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+  route TEXT NOT NULL,
+  order_index INTEGER NOT NULL DEFAULT 0,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create company stats table
+CREATE TABLE public.company_stats (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  label TEXT NOT NULL,
+  value TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  order_index INTEGER NOT NULL DEFAULT 0,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create site settings table
+CREATE TABLE public.site_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  key TEXT UNIQUE NOT NULL,
+  value TEXT NOT NULL,
+  description TEXT,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security (RLS) for all tables
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.hero_slides ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.news_articles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.team_members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.business_sectors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.company_stats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS policies (for now, allow all operations - we'll implement proper auth later)
+CREATE POLICY "Allow all operations" ON public.admin_users FOR ALL USING (true);
+CREATE POLICY "Allow all operations" ON public.hero_slides FOR ALL USING (true);
+CREATE POLICY "Allow all operations" ON public.news_articles FOR ALL USING (true);
+CREATE POLICY "Allow all operations" ON public.team_members FOR ALL USING (true);
+CREATE POLICY "Allow all operations" ON public.business_sectors FOR ALL USING (true);
+CREATE POLICY "Allow all operations" ON public.company_stats FOR ALL USING (true);
+CREATE POLICY "Allow all operations" ON public.site_settings FOR ALL USING (true);
+
+-- Insert sample data for hero slides
+INSERT INTO public.hero_slides (title, subtitle, description, image_url, order_index) VALUES
+('Real Estate Development', 'Building Ethiopia''s Future', 'Modern residential and commercial properties that shape Ethiopia''s urban landscape', 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3', 1),
+('ATICADO Fresh Avocado', 'Premium Ethiopian Avocados', 'Sustainable farming practices delivering premium quality avocados globally', 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?ixlib=rb-4.0.3', 2),
+('Ethiopian Coffee Export', 'Premium Highland Coffee', 'Renowned Ethiopian coffee beans from highland regions with rich heritage', 'https://coffeehunter.com/wp-content/uploads/2022/10/Ethiopia-square-2.jpg', 3),
+('Manufacturing Excellence', 'Quality Construction Materials', 'State-of-the-art ceramic tiles and bathroom solutions for modern construction', 'https://uploads-ssl.webflow.com/63907572c9e5354fb30f9c3d/63d0fdae871e645f96601c50_VrdfRizXgXp0CmlzLIvAh_laFuP5RCSbgkcl4erHzYfevIensfbsEHZC4TTEjyzjFxgQimz8Y21BxH8-JuXZxEmPn9pfGo_CfXtBLqxzHPnX_rE1n6vvRDkyiVbfEeUl-bGJzVKDaDfY4sch9njrukoNm_IHxA5qIzagurIJR6pkUkcBl3gYuYDBpg_f.jpeg', 4);
+
+-- Insert sample data for team members
+INSERT INTO public.team_members (name, position, department, bio, image_url, experience, order_index) VALUES
+('Abdurahman Yassin', 'Chief Executive Officer', 'Executive Leadership', 'Leading ATICOM with strategic vision and extensive experience in international business development.', 'https://aticomgroup.com/extensions/uploads/sites/486/2024/10/ceo-964x1024.jpg', '15+ Years', 1),
+('Tesfaye Birhanu', 'Chief Operating Officer', 'Operations Management', 'Overseeing daily operations and ensuring excellence across all business sectors.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMaBG5bgFRGq2MaK0oFbLtWhH8nk3ixADOFA&s', '12+ Years', 2),
+('Biruk Asmera', 'Director of Marketing & Sales', 'Marketing & Business Development', 'Driving growth through innovative marketing strategies and strategic partnerships.', 'https://aticomgroup.com/extensions/uploads/sites/486/2024/10/sales-and-marketing-768x1024.jpg', '10+ Years', 3),
+('Abdulaziz Hussein', 'Director of Finance', 'Corporate Finance & Procurement', 'Managing financial operations and procurement processes with precision and integrity.', 'https://aticomgroup.com/extensions/uploads/sites/486/2024/10/corporate-finance-768x1024.jpg', '8+ Years', 4);
+
+-- Insert sample data for business sectors
+INSERT INTO public.business_sectors (title, description, image_url, features, route, order_index) VALUES
+('Real Estate Development', 'Modern residential and commercial properties that shape Ethiopia''s urban landscape with quality and innovation.', 'https://nairametrics.com/wp-content/uploads/2022/03/Property-Development.jpg', '{"Residential Projects","Commercial Buildings","Urban Planning"}', '/real-estate', 1),
+('ATICADO Fresh Avocado', 'Premium Ethiopian avocados cultivated with sustainable farming practices and exported globally.', 'https://www.bda.uk.com/static/3f0121a6-68e0-4a0f-867102c9da2f0763/avocadoes.jpg', '{"Organic Farming","Global Export","Quality Control"}', '/avocado-fresh', 2),
+('ATICADO Oil Production', 'Cold-pressed avocado oil delivering exceptional quality and nutritional value for health-conscious consumers.', 'https://arabianorganics.com/cdn/shop/files/9664-2057.png?v=1701342553', '{"Cold-Pressed","Premium Quality","Health Benefits"}', '/avocado-oil', 3),
+('Cereal Crops Export', 'High-quality Ethiopian cereal crops including wheat, barley, and specialty grains for international markets.', 'https://millingmea.com/wp-content/uploads/2023/05/cereal-crops.jpg', '{"Wheat & Barley","Quality Assurance","Global Trading"}', '/cereal-crops', 4),
+('Ethiopian Coffee Export', 'Premium Ethiopian coffee beans sourced from highlands, renowned for exceptional flavor and rich heritage.', 'https://coffeehunter.com/wp-content/uploads/2022/10/Ethiopia-square-2.jpg', '{"Highland Sourced","Premium Quality","Rich Heritage"}', '/coffee', 5),
+('Construction Materials', 'Ceramic tiles, bathroom solutions, and finishing materials for modern construction projects.', 'https://uploads-ssl.webflow.com/63907572c9e5354fb30f9c3d/63d0fdae871e645f96601c50_VrdfRizXgXp0CmlzLIvAh_laFuP5RCSbgkcl4erHzYfevIensfbsEHZC4TTEjyzjFxgQimz8Y21BxH8-JuXZxEmPn9pfGo_CfXtBLqxzHPnX_rE1n6vvRDkyiVbfEeUl-bGJzVKDaDfY4sch9njrukoNm_IHxA5qIzagurIJR6pkUkcBl3gYuYDBpg_f.jpeg', '{"Ceramic Tiles","Bathroom Solutions","Quality Materials"}', '/manufacturing', 6);
+
+-- Insert sample data for news articles
+INSERT INTO public.news_articles (title, excerpt, content, image_url, category, author, published) VALUES
+('Ethiopian Best Avocado Exporter Recognition', 'ATICOM recognized for excellence in avocado export quality and sustainable farming practices, setting new industry standards.', 'ATICOM Investment Group has been recognized as Ethiopia''s premier avocado exporter, achieving this distinction through our commitment to sustainable farming practices and exceptional quality control measures. Our ATICADO brand continues to set industry standards in the global market.', '/lovable-uploads/ce2da46f-e428-4a5f-8ccf-2f861740c234.png', 'Export Business News', 'ATICOM Team', true),
+('ATICOM Investment Group Business Expansion', 'Strategic expansion into new markets with focus on sustainable agricultural development and technology integration.', 'We are pleased to announce ATICOM''s strategic expansion into new international markets, with a focus on sustainable agricultural development and cutting-edge technology integration. This expansion represents our commitment to growth while maintaining our core values of quality and sustainability.', '/lovable-uploads/ce2da46f-e428-4a5f-8ccf-2f861740c234.png', 'Business Development', 'Business Development Team', true),
+('Premium Coffee Export Achievement', 'Record-breaking coffee export volumes with maintained quality standards and international recognition from global buyers.', 'ATICOM has achieved record-breaking coffee export volumes while maintaining the highest quality standards. Our Ethiopian highland coffee has received international recognition from global buyers, further cementing our position as a leading exporter in the region.', '/lovable-uploads/ce2da46f-e428-4a5f-8ccf-2f861740c234.png', 'Export Business News', 'Export Division', true);
+
+-- Insert sample data for site settings
+INSERT INTO public.site_settings (key, value, description) VALUES
+('company_name', 'ATICOM Investment Group', 'Company name displayed across the website'),
+('company_email', 'info@aticomgroup.com', 'Main company contact email'),
+('company_phone', '+251-11-123-4567', 'Main company contact phone'),
+('company_address', 'Addis Ababa, Ethiopia', 'Company headquarters address'),
+('hero_tagline', 'Diversified Investment Excellence', 'Main tagline displayed on hero section'),
+('company_description', 'Leading Ethiopian investment group with diversified portfolio spanning real estate, agriculture, manufacturing, and international trade', 'Company description for meta tags and about sections');

@@ -1,0 +1,76 @@
+{
+  "name": "ATICOM Investment Group",
+  "short_name": "ATICOM",
+  "description": "Leading Ethiopian business conglomerate specializing in bathroom solutions, ceramic tiles, agricultural exports, and real estate development",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#417ABD",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["business", "finance", "shopping", "productivity"],
+  "icons": [
+    {
+      "src": "/lovable-uploads/19dd7868-19b3-4400-b881-1d6834e52292.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lovable-uploads/19dd7868-19b3-4400-b881-1d6834e52292.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/lovable-uploads/ce2da46f-e428-4a5f-8ccf-2f861740c234.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Bathroom Solutions",
+      "short_name": "Bathroom",
+      "description": "Explore JOMOO bathroom products",
+      "url": "/bathroom-solutions",
+      "icons": [
+        {
+          "src": "/lovable-uploads/19dd7868-19b3-4400-b881-1d6834e52292.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Ceramic Tiles",
+      "short_name": "Tiles",
+      "description": "Browse ARERTI ceramic tiles",
+      "url": "/ceramic-tiles",
+      "icons": [
+        {
+          "src": "/lovable-uploads/19dd7868-19b3-4400-b881-1d6834e52292.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Contact Us",
+      "short_name": "Contact",
+      "description": "Get in touch with ATICOM",
+      "url": "/contact",
+      "icons": [
+        {
+          "src": "/lovable-uploads/19dd7868-19b3-4400-b881-1d6834e52292.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
