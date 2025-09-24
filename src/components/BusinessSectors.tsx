@@ -1,28 +1,29 @@
-
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, CheckCircle } from "lucide-react";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 interface BusinessSector {
-  id: string;
-  title: string;
-  description: string;
-  image_url: string;
-  features: string[];
-  route: string;
-  order_index: number;
-  active: boolean;
-}
-
+     id: string;
+     title: string;
+     description: string;
+     image_url: string;
+     features: string[];
+     route: string;
+     order_index: number;
+     active: boolean;
+   }
 interface SectionHeaders {
   title: string;
   subtitle: string;
 }
-
 // Fallback images for different business sectors - Using simple, reliable sources
 const fallbackImages = {
   'bathroom-solutions': [
@@ -213,78 +214,94 @@ const BusinessSectors = () => {
       </div>
     </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 mt-0">
-          {sectors.map((sector, index) => (
-            <Card
-              key={sector.id}
-              className="group relative hover:shadow-xl transition-all duration-300 border border-gray-100 rounded-xl overflow-hidden animate-fade-in transform hover:-translate-y-1 hover:scale-102 bg-white shadow-lg"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 overflow-hidden">
-                <img
-                  src={getCurrentImage(sector)}
-                  alt={sector.title}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-700 ease-in-out group-hover:grayscale-0 grayscale"
-                  onError={(e) => {
-                    // If the image fails to load, try the next fallback image
-                    const target = e.target as HTMLImageElement;
-                    const fallbackImagesForSector = fallbackImages[sector.route as keyof typeof fallbackImages] || fallbackImages['bathroom-solutions'];
-                    const currentImageIndex = (imageStates[sector.id] || 0) + 1;
-                    const nextImageIndex = currentImageIndex % fallbackImagesForSector.length;
+        <div className="w-full px-4 mt-0">
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={12}
+            slidesPerView={1.1}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 4000, disableOnInteraction: false }}
+            breakpoints={{
+  640: { slidesPerView: 1.5, spaceBetween: 12 },
+  768: { slidesPerView: 2.2, spaceBetween: 16 },
+  1024: { slidesPerView: 3, spaceBetween: 16 },
+}}
+            style={{ paddingBottom: '32px' }}
+          >
+            {sectors.map((sector, index) => (
+              <SwiperSlide key={sector.id}>
+                <Card
+                  className="group relative hover:shadow-xl transition-all duration-300 border border-gray-100 rounded-xl overflow-hidden animate-fade-in transform hover:-translate-y-1 hover:scale-102 bg-white shadow-lg"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 overflow-hidden">
+                    <img
+                      src={getCurrentImage(sector)}
+                      alt={sector.title}
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-700 ease-in-out group-hover:grayscale-0 grayscale"
+                      onError={(e) => {
+                        // If the image fails to load, try the next fallback image
+                        const target = e.target as HTMLImageElement;
+                        const fallbackImagesForSector = fallbackImages[sector.route as keyof typeof fallbackImages] || fallbackImages['bathroom-solutions'];
+                        const currentImageIndex = (imageStates[sector.id] || 0) + 1;
+                        const nextImageIndex = currentImageIndex % fallbackImagesForSector.length;
+                        
+                        // Update the image state to the next image
+                        setImageStates(prev => ({
+                          ...prev,
+                          [sector.id]: nextImageIndex
+                        }));
+                        
+                        // Set the next image
+                        target.src = fallbackImagesForSector[nextImageIndex];
+                      }}
+                      onLoad={() => {
+                        // Image loaded successfully
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                     
-                    // Update the image state to the next image
-                    setImageStates(prev => ({
-                      ...prev,
-                      [sector.id]: nextImageIndex
-                    }));
-                    
-                    // Set the next image
-                    target.src = fallbackImagesForSector[nextImageIndex];
-                  }}
-                  onLoad={() => {
-                    // Image loaded successfully
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                
-                {/* Image rotation indicator */}
-                <div className="absolute top-2 right-2">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-1">
-                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                  </div>
-                </div>
-                
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-md mb-1">
-                    {sector.title}
-        
-                  </h3>
-                </div>
-              </div>
-              
-              <CardContent className="p-6">
-                <p className="text-sm text-gray-700 leading-relaxed mb-4 line-clamp-3">
-                  {sector.description}
-                </p>
-                
-                <div className="space-y-3 mb-6">
-                  {sector.features.slice(0, 3).map((feature, featureIndex) => (
-                    <div key={featureIndex} className="flex items-center space-x-3">
-                      <CheckCircle className="w-5 h-5 text-aticom-green flex-shrink-0" />
-                      <span className="text-sm text-gray-700 font-medium">{feature}</span>
+                    {/* Image rotation indicator */}
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-1">
+                        <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                      </div>
                     </div>
-                  ))}
-                </div>
+                    
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-md mb-1">
+                        {sector.title}
+        
+                      </h3>
+                    </div>
+                  </div>
+                  
+                  <CardContent className="p-6">
+                    <p className="text-sm text-gray-700 leading-relaxed mb-4 line-clamp-3">
+                      {sector.description}
+                    </p>
+                    
+                    <div className="space-y-3 mb-6">
+                      {sector.features.slice(0, 3).map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-center space-x-3">
+                          <CheckCircle className="w-5 h-5 text-aticom-green flex-shrink-0" />
+                          <span className="text-sm text-gray-700 font-medium">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
 
-                <Link to={sector.route}>
-                  <Button className="w-full bg-gradient-to-r from-aticom-blue to-aticom-green hover:from-aticom-green hover:to-aticom-blue text-white font-semibold py-2.5 px-4 rounded-xl transition-all duration-300 transform group-hover:scale-105 shadow-md hover:shadow-lg">
-                    Learn More
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
+                    <Link to={sector.route}>
+                      <Button className="w-full bg-gradient-to-r from-aticom-blue to-aticom-green hover:from-aticom-green hover:to-aticom-blue text-white font-semibold py-2.5 px-4 rounded-xl transition-all duration-300 transform group-hover:scale-105 shadow-md hover:shadow-lg">
+                        Learn More
+                        <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       
     </section>
@@ -292,3 +309,8 @@ const BusinessSectors = () => {
 };
 
 export default BusinessSectors;
+
+
+
+
+
