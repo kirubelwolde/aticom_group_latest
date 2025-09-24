@@ -408,7 +408,7 @@ const HeroSection = () => {
                   <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-18 lg:h-18 flex items-center justify-center">
                     <a href="https://aticomcoffee.com/" target="_blank" rel="noopener noreferrer">
                       <a href="https://aticomcoffee.com/" target="_blank" rel="noopener noreferrer">
-                        <img src="/lovable-uploads/ac.png" alt="ATICOM-Coffee" className="w-36 h-36 sm:w-44 sm:h-44 lg:w-56 lg:h-56 object-contain brightness-110 contrast-125 group-hover:scale-110 transition-transform duration-500 rounded-xl animate-pulse" style={{ animationDelay: '0.7s' }}/>
+                        <img src="/lovable-uploads/atina.png" alt="ATICOM-Coffee" className="w-36 h-36 sm:w-44 sm:h-44 lg:w-56 lg:h-56 object-contain brightness-110 contrast-125 group-hover:scale-110 transition-transform duration-500 rounded-xl animate-pulse" style={{ animationDelay: '0.7s' }}/>
                       </a>
                     </a>
                   </div>                  

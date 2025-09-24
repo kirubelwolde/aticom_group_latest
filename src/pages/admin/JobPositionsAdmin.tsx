@@ -387,7 +387,7 @@ const JobPositionsAdmin: React.FC = () => {
                         <FormLabel>Salary</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="e.g. $50,000 - $70,000"
+                            placeholder="e.g. ETB: 50,000 - ETB: 70,000"
                             {...field}
                           />
                         </FormControl>
@@ -702,7 +702,7 @@ Flexible working hours"
                       <FormLabel>Salary</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="e.g. $50,000 - $70,000"
+                          placeholder="e.g. ETB: 50,000 - ETB: 70,000"
                           {...field}
                         />
                       </FormControl>

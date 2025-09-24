@@ -181,7 +181,7 @@ const OpenPositions = () => {
       return;
     }
 
-    let resumeUrl = null;
+    let resumeUrl: string | null = null;
     if (appForm.resume) {
       resumeUrl = await uploadResume(appForm.resume);
       if (!resumeUrl) return;
@@ -199,10 +199,43 @@ const OpenPositions = () => {
       }
     ]);
     if (error) {
-      console.error("Supabase insert error:", error); // Log full error for debugging
+      console.error("Supabase insert error:", error);
       toast({ variant: "destructive", title: "Application failed", description: error.message });
       return;
     }
+
+    // After saving the application, notify HR via Supabase Edge Function
+    try {
+      const { error: emailError } = await supabase.functions.invoke('send-application-email', {
+        body: {
+          recipient: 'biniyammulugetabm@gmail.com', // test HR email; can be configured later
+          applicant: {
+            name: appForm.name,
+            email: appForm.email,
+            phone: appForm.phone,
+            experience: appForm.experience,
+            coverLetter: appForm.coverLetter,
+            resumeUrl: resumeUrl,
+          },
+          position: {
+            id: selectedPosition.id,
+            title: selectedPosition.title,
+            department: selectedPosition.department,
+            location: selectedPosition.location,
+            type: selectedPosition.type,
+          },
+        },
+      });
+      if (emailError) {
+        console.error('Email notify error:', emailError);
+        // Inform but do not block success flow
+        toast({ title: 'Application Saved', description: 'We could not notify HR by email at this time.' });
+      }
+    } catch (err) {
+      console.error('Email invoke exception:', err);
+      // Do not block success flow
+    }
+
     setShowApplicationModal(false);
     setSelectedPosition(null);
     setAppForm({
@@ -605,7 +638,7 @@ const OpenPositions = () => {
               <Textarea
                 required
                 name="coverLetter"
-                placeholder="Tell us why you're interested in this position and why you'd be a great fit..."
+                placeholder=" us why you're interested in this position and why you'd be a great fit..."
                 value={appForm.coverLetter}
                 onChange={handleAppInput}
                 className="h-32 border-slate-200 focus:ring-slate-600 focus:border-slate-600"
