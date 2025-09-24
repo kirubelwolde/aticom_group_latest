@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { Link } from "react-router-dom";
 // Removed Layout to avoid double wrapping on homepage
 import HeroSection from "@/components/HeroSection";
@@ -321,3 +321,4 @@ const Index = () => {
 };
 
 export default Index;
+

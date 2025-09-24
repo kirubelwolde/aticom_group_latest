@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import Map from "@/components/Map";
 import { ProfessionalButton } from "@/components/ui/professional-button";
 import { ProfessionalBadge } from "@/components/ui/professional-badge";
@@ -22,7 +22,72 @@ import {
   MessageSquare,
 } from "lucide-react";
 
-const Contact = () => {
+const Contact: React.FC = () => {
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [company, setCompany] = useState('');
+  const [areaOfInterest, setAreaOfInterest] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    // Here you would typically send the form data to a backend API or a service like EmailJS
+    // For now, we'll just log the data to the console.
+    console.log({
+      fullName,
+      email,
+      phoneNumber,
+      company,
+      areaOfInterest,
+      message,
+    });
+
+    // In a real application, you would add logic here to send the email
+    // For example, using a fetch request to your backend:
+    /*
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: 'admin_assistant@aticomgroup.com',
+          subject: 'New Contact Form Submission',
+          body: `
+            Full Name: ${fullName}
+            Email: ${email}
+            Phone Number: ${phoneNumber}
+            Company: ${company}
+            Area of Interest: ${areaOfInterest}
+            Message: ${message}
+          `,
+        }),
+      });
+
+      if (response.ok) {
+        alert('Message sent successfully!');
+        // Optionally reset form fields
+        setFullName('');
+        setEmail('');
+        setPhoneNumber('');
+        setCompany('');
+        setAreaOfInterest('');
+        setMessage('');
+      } else {
+        alert('Failed to send message.');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('An error occurred while sending the message.');
+    }
+    */
+
+    alert('Form submitted! (Email sending is simulated)');
+  };
+
   const contactMethods = [
     {
       icon: Phone,
@@ -418,7 +483,7 @@ const Contact = () => {
 
             <Card className="card-premium">
               <CardContent className="p-6">
-                <form className="space-y-5">
+                <form className="space-y-5" onSubmit={handleSubmit}>
                   <div className="grid md:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-sm font-medium text-slate-800 mb-2">
@@ -427,6 +492,8 @@ const Contact = () => {
                       <Input
                         placeholder="Enter your full name"
                         className="w-full focus:ring-slate-700 focus:border-slate-700"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
                       />
                     </div>
                     <div>
@@ -436,7 +503,10 @@ const Contact = () => {
                       <Input
                         type="email"
                         placeholder="Enter your email"
+                        
                         className="w-full focus:ring-slate-700 focus:border-slate-700"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
                   </div>
@@ -449,6 +519,8 @@ const Contact = () => {
                       <Input
                         placeholder="Enter your phone number"
                         className="w-full focus:ring-slate-700 focus:border-slate-700"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
                       />
                     </div>
                     <div>
@@ -458,6 +530,8 @@ const Contact = () => {
                       <Input
                         placeholder="Enter company name"
                         className="w-full focus:ring-slate-700 focus:border-slate-700"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
                       />
                     </div>
                   </div>
@@ -466,7 +540,11 @@ const Contact = () => {
                     <label className="block text-sm font-medium text-slate-800 mb-2">
                       Area of Interest
                     </label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-700 focus:border-slate-700 text-sm">
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-700 focus:border-slate-700 text-sm"
+                      value={areaOfInterest}
+                      onChange={(e) => setAreaOfInterest(e.target.value)}
+                    >
                       <option>Select an area of interest</option>
                       <option>Real Estate Development</option>
                       <option>Agriculture & Avocado Products</option>
@@ -485,6 +563,8 @@ const Contact = () => {
                     <Textarea
                       placeholder="Tell us about your project or inquiry..."
                       className="w-full h-28 focus:ring-slate-700 focus:border-slate-700"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
                     />
                   </div>
 

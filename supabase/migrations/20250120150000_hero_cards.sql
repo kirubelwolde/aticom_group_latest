@@ -19,15 +19,15 @@ CREATE TABLE IF NOT EXISTS hero_cards (
 ALTER TABLE hero_cards ENABLE ROW LEVEL SECURITY;
 
 -- Create policy for public read access
-CREATE POLICY "Public can read active hero cards" ON hero_cards
-  FOR SELECT USING (active = true);
+-- CREATE POLICY "Public can read active hero cards" ON hero_cards
+--   FOR SELECT USING (active = true);
 
 -- Create policy for admin access (authenticated users with aticom.com email)
-CREATE POLICY "Admin can manage hero cards" ON hero_cards
-  FOR ALL USING (
-    auth.role() = 'authenticated' AND 
-    auth.jwt() ->> 'email' LIKE '%@aticom.com'
-  );
+-- CREATE POLICY "Admin can manage hero cards" ON hero_cards
+--   FOR ALL USING (
+--     auth.role() = 'authenticated' AND 
+--     auth.jwt() ->> 'email' LIKE '%@aticom.com'
+--   );
 
 -- Insert default hero cards
 INSERT INTO hero_cards (title, subtitle, route, primary_image, secondary_image, tertiary_image, gradient_from, gradient_to, order_index) VALUES
@@ -86,10 +86,10 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create trigger to automatically update updated_at
-CREATE TRIGGER update_hero_cards_updated_at
-  BEFORE UPDATE ON hero_cards
-  FOR EACH ROW
-  EXECUTE FUNCTION update_hero_cards_updated_at();
+-- CREATE TRIGGER update_hero_cards_updated_at
+--   BEFORE UPDATE ON hero_cards
+--   FOR EACH ROW
+--   EXECUTE FUNCTION update_hero_cards_updated_at();
 
 -- Create storage bucket for hero card images
 INSERT INTO storage.buckets (id, name, public) 
@@ -97,26 +97,26 @@ VALUES ('hero-cards', 'hero-cards', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Create storage policies
-CREATE POLICY "Public can view hero card images" ON storage.objects
-FOR SELECT USING (bucket_id = 'hero-cards');
-
-CREATE POLICY "Admin can upload hero card images" ON storage.objects
-FOR INSERT WITH CHECK (
-  bucket_id = 'hero-cards' AND 
-  auth.role() = 'authenticated' AND 
-  auth.jwt() ->> 'email' LIKE '%@aticom.com'
-);
-
-CREATE POLICY "Admin can update hero card images" ON storage.objects
-FOR UPDATE USING (
-  bucket_id = 'hero-cards' AND 
-  auth.role() = 'authenticated' AND 
-  auth.jwt() ->> 'email' LIKE '%@aticom.com'
-);
-
-CREATE POLICY "Admin can delete hero card images" ON storage.objects
-FOR DELETE USING (
-  bucket_id = 'hero-cards' AND 
-  auth.role() = 'authenticated' AND 
-  auth.jwt() ->> 'email' LIKE '%@aticom.com'
-);
+-- CREATE POLICY "Public can view hero card images" ON storage.objects
+--   FOR SELECT USING (bucket_id = 'hero-cards');
+--
+-- CREATE POLICY "Admin can upload hero card images" ON storage.objects
+--   FOR INSERT WITH CHECK (
+--     bucket_id = 'hero-cards' AND 
+--     auth.role() = 'authenticated' AND 
+--     auth.jwt() ->> 'email' LIKE '%@aticom.com'
+--   );
+--
+-- CREATE POLICY "Admin can update hero card images" ON storage.objects
+--   FOR UPDATE USING (
+--     bucket_id = 'hero-cards' AND 
+--     auth.role() = 'authenticated' AND 
+--     auth.jwt() ->> 'email' LIKE '%@aticom.com'
+--   );
+--
+-- CREATE POLICY "Admin can delete hero card images" ON storage.objects
+--   FOR DELETE USING (
+--     bucket_id = 'hero-cards' AND 
+--     auth.role() = 'authenticated' AND 
+--     auth.jwt() ->> 'email' LIKE '%@aticom.com'
+--   );

@@ -142,19 +142,7 @@ const TeamSection = () => {
         >
           <CardContent className="p-6 text-center">
             <div className="relative mb-4">
-              {member.image_url ? (
-                <img
-                  src={member.image_url}
-                  alt={member.name}
-                  className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-aticom-green/20 group-hover:border-aticom-green transition-all duration-300"
-                />
-              ) : (
-                <div className="w-24 h-24 rounded-full mx-auto bg-gradient-to-br from-aticom-blue to-aticom-green flex items-center justify-center border-4 border-aticom-green/20 group-hover:border-aticom-green transition-all duration-300">
-                  <span className="text-white text-xl font-bold">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
-              )}
+              {/* Image or initials placeholder removed */}
             </div>
             <h3 className="text-lg font-bold text-aticom-navy mb-1">
               {member.name}
@@ -163,7 +151,6 @@ const TeamSection = () => {
               {member.position}
             </p>
             <p className="text-gray-500 text-xs mb-3">
-              {member.department}
             </p>
             <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
               {member.bio}
