@@ -120,7 +120,7 @@ const Index = () => {
               <div className="flex transition-transform duration-1000 ease-in-out" id="bathroom-slideshow">
                 <div className="min-w-full relative">
                   <img
-                    src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
+                    src="https://plus.unsplash.com/premium_photo-1720486620020-c70516e9b69f?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Sanitary Ware"
                     className="w-full h-96 object-cover"
                   />
@@ -133,7 +133,7 @@ const Index = () => {
                 
                 <div className="min-w-full relative">
                   <img
-                    src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                    src="https://images.unsplash.com/photo-1573219071651-f1937d0ec94b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Faucets & Hardware"
                     className="w-full h-96 object-cover"
                   />
@@ -146,7 +146,7 @@ const Index = () => {
                 
                 <div className="min-w-full relative">
                   <img
-                    src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                    src="https://plus.unsplash.com/premium_photo-1733864821605-4cbcc2095dcb?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Shower Systems"
                     className="w-full h-96 object-cover"
                   />
@@ -159,7 +159,7 @@ const Index = () => {
                 
                 <div className="min-w-full relative">
                   <img
-                    src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                    src="https://plus.unsplash.com/premium_photo-1674035037186-d5e21716cc16?q=80&w=831&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Bathroom Accessories"
                     className="w-full h-96 object-cover"
                   />
@@ -221,7 +221,7 @@ const Index = () => {
               <div className="group">
                 <div className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                   <img
-                    src="https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
+                    src="https://www.bda.uk.com/static/3f0121a6-68e0-4a0f-867102c9da2f0763/avocadoes.jpg"
                     alt="Fresh Avocado"
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -235,7 +235,7 @@ const Index = () => {
               <div className="group">
                 <div className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                   <img
-                    src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                    src="https://arabianorganics.com/cdn/shop/files/9664-2057.png?v=1701342553"
                     alt="Avocado Oil"
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                   />

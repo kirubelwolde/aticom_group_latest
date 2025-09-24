@@ -14,6 +14,7 @@ import { useBathroomProducts, useBathroomInstallations, useBathroomCategories, u
 import type { ProductInquiryFormData } from "@/types/bathroom-solutions";
 
 const BathroomSolutions = () => {
+  
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [inquiryDialogOpen, setInquiryDialogOpen] = useState(false);
