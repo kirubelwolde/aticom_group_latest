@@ -151,14 +151,16 @@ const OrganizationStructure = () => {
         </section>
 
         {/* Business Divisions */}
-        <section className="py-16 lg:py-20 bg-gradient-to-br from-gray-50 to-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section
+          className="py-16 lg:py-20 relative overflow-hidden bg-cover bg-center bg-fixed"
+          style={{ backgroundImage: `url('/public/lovable-uploads/structure.jpg')` }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-12">
               <div className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-[#5EB447] to-[#417ABD] text-white rounded-full text-xs font-semibold mb-4">
                 Business Structure
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-                Our Business Divisions
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl text-center">
               </h2>
               <p className="text-sm text-gray-600 max-w-3xl mx-auto">
                 Three core divisions working in harmony to drive growth and

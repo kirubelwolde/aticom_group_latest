@@ -767,6 +767,7 @@ const OpenPositions = () => {
                   }}
                   className="flex-1 bg-slate-800 hover:bg-slate-700 text-white"
                 >
+                  
                   Apply Now
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>

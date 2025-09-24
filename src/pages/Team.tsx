@@ -405,7 +405,7 @@ const Team = () => {
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                   Our Business Divisions
                 </h2>
-                <div className="w-20 h-1 bg-gradient-to-r from-aticom-blue to-aticom-green mx-auto mb-8"></div>
+                <img src="/lovable-uploads/structure.jpg" alt="Organization Structure" className="rounded-xl shadow-lg w-full h-auto object-cover hover:shadow-xl transition-shadow duration-300" />
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
                   {businessDivisions.map((division, index) => {
