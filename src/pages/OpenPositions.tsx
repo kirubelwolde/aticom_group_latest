@@ -208,7 +208,7 @@ const OpenPositions = () => {
     try {
       const { error: emailError } = await supabase.functions.invoke('send-application-email', {
         body: {
-          recipient: 'biniyammulugetabm@gmail.com', // test HR email; can be configured later
+          recipient: 'hr@aticomgroup.com', // test HR email; can be configured later
           applicant: {
             name: appForm.name,
             email: appForm.email,

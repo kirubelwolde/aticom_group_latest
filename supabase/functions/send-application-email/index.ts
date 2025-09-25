@@ -3,7 +3,7 @@
 // Store your API key and default HR email in Supabase secrets:
 // supabase secrets set RESEND_API_KEY=your_resend_api_key HR_EMAIL=hr@example.com
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.200.0/http/server.ts";
 
 interface ApplicantInfo {
   name: string;
@@ -31,7 +31,9 @@ serve(async (req: Request): Promise<Response> => {
   }
 
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+  console.log("RESEND_API_KEY length:", RESEND_API_KEY ? RESEND_API_KEY.length : "null");
   const DEFAULT_HR_EMAIL = Deno.env.get("HR_EMAIL");
+  console.log("DEFAULT_HR_EMAIL:", DEFAULT_HR_EMAIL);
 
   if (!RESEND_API_KEY) {
     return new Response(
