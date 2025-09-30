@@ -6,55 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight } from "lucide-react";
-
-interface TeamMember {
-  id: string;
-  name: string;
-  position: string;
-  department: string;
-  bio: string;
-  image_url: string | null;
-  experience: string | null;
-  order_index: number;
-}
+import { getTeamMembers, TeamMember } from "@/services/teamService";
 
 interface SectionHeaders {
   title: string;
   subtitle: string;
 }
-
-const dummyMembers: TeamMember[] = [
-  {
-    id: "1",
-    name: "Abdurehman yassin",
-    position: "Chief Executive Officer",
-    department: "Management",
-    bio: "ABdurehman leads ATICOM with over 5 years of experience in business leadership and innovation.",
-    image_url: null,
-    experience: "5+ years",
-    order_index: 1,
-  },
-  {
-    id: "2",
-    name: "Tesfaye birhanu",
-    position: "Chief Operations Officer",
-    department: "Operations",
-    bio: "Tesfaye oversees daily operations and ensures the company runs smoothly.",
-    image_url: null,
-    experience: "4+ years",
-    order_index: 2,
-  },
-  {
-    id: "3",
-    name: "Biruk Asmara",
-    position: "corporate marketing and sales",
-    department: "Finance",
-    bio: "Biruk manages the financial actions of ATICOM and drives fiscal growth.",
-    image_url: null,
-    experience: "2+ years",
-    order_index: 3,
-  },
-];
 
 const TeamSection = () => {
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -68,14 +25,7 @@ const TeamSection = () => {
     const fetchData = async () => {
       try {
         // Fetch team members
-        const { data: membersData, error: membersError } = await supabase
-          .from('team_members')
-          .select('*')
-          .eq('active', true)
-          .order('order_index')
-          .limit(3);
-
-        if (membersError) throw membersError;
+        const membersData = await getTeamMembers(3);
         setMembers(membersData || []);
 
         // Fetch section headers from site_settings
@@ -131,10 +81,10 @@ const TeamSection = () => {
         </div>
 
 
-        {(members.length > 0 ? members : dummyMembers).length > 0 ? (
+        {members.length > 0 ? (
   <>
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-      {(members.length > 0 ? members : dummyMembers).map((member, index) => (
+      {members.map((member, index) => (
         <Card
           key={member.id}
           className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white animate-fade-in"

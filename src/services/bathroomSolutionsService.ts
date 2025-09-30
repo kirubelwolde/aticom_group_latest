@@ -7,7 +7,8 @@ import type {
   ProductInquiry,
   BathroomProductFormData,
   BathroomInstallationFormData,
-  ProductInquiryFormData
+  ProductInquiryFormData,
+  BathroomSolutionFormData
 } from "@/types/bathroom-solutions";
 
 export class BathroomSolutionsService {
@@ -230,6 +231,24 @@ export class BathroomSolutionsService {
     const { data, error } = await supabase
       .from("product_inquiries")
       .insert([inquiry])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  static async createBathroomSolution(solution: BathroomSolutionFormData): Promise<BathroomSolutionFormData> {
+    // Get bathroom solutions business sector ID
+    const { data: sector } = await supabase
+      .from("business_sectors")
+      .select("id")
+      .eq("route", "/bathroom-solutions")
+      .single();
+
+    const { data, error } = await supabase
+      .from("bathroom_solutions")
+      .insert([{ ...solution, business_sector_id: sector?.id }])
       .select()
       .single();
 

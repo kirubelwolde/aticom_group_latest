@@ -95,3 +95,11 @@ export interface ProductInquiryFormData {
   message?: string;
   inquiry_type?: string;
 }
+
+export interface BathroomSolutionFormData {
+  title: string;
+  description: string;
+  image_url: string;
+  category: string;
+  features: string[];
+}

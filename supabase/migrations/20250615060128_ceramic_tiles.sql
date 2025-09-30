@@ -107,27 +107,27 @@ INSERT INTO public.partners_content (
   '[
     {
       "name": "Ethiopian Airlines",
-      "logo": "/lovable-uploads/579ae00d-1b54-4620-bb45-aae2d62bf7f2.png"
+      "logo": "/lovable-uploads/c3.jpg"
     },
     {
       "name": "Commercial Bank of Ethiopia", 
-      "logo": "/lovable-uploads/ce2da46f-e428-4a5f-8ccf-2f861740c234.png"
+      "logo": "/lovable-uploads/commercial_bank.jpg"
     },
     {
       "name": "Ethiopian Investment Commission",
-      "logo": "/lovable-uploads/914150f2-c3e2-41f8-a334-a1c78c6c7692.png"
+      "logo": "/lovable-uploads/c4.jpg"
     },
     {
       "name": "Ministry of Agriculture",
-      "logo": "/lovable-uploads/579ae00d-1b54-4620-bb45-aae2d62bf7f2.png"
+      "logo": "/lovable-uploads/agriculture.png"
     },
     {
       "name": "Export Development Bank",
-      "logo": "/lovable-uploads/ce2da46f-e428-4a5f-8ccf-2f861740c234.png"
+      "logo": "/lovable-uploads/export.jpg"
     },
     {
       "name": "Ethiopian Chamber of Commerce", 
-      "logo": "/lovable-uploads/914150f2-c3e2-41f8-a334-a1c78c6c7692.png"
+      "logo": "/lovable-uploads/c2.jpg"
     }
   ]'::jsonb
 );

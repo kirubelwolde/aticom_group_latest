@@ -10,8 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Star, Phone, Mail, MessageSquare, Search, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useBathroomProducts, useBathroomInstallations, useBathroomCategories, useCreateProductInquiry } from "@/hooks/useBathroomSolutions";
-import type { ProductInquiryFormData } from "@/types/bathroom-solutions";
+import { useBathroomProducts, useBathroomInstallations, useBathroomCategories, useCreateProductInquiry, useCreateBathroomSolution } from "@/hooks/useBathroomSolutions";
+import type { ProductInquiryFormData, BathroomSolutionFormData } from "@/types/bathroom-solutions";
 
 const BathroomSolutions = () => {
   
@@ -27,11 +27,21 @@ const BathroomSolutions = () => {
     inquiry_type: "general",
   });
 
+  const [newSolutionDialogOpen, setNewSolutionDialogOpen] = useState(false);
+  const [newSolutionForm, setNewSolutionForm] = useState<BathroomSolutionFormData>({
+    title: "",
+    description: "",
+    image_url: "",
+    category: "",
+    features: [],
+  });
+
   // Data fetching
   const { data: products, isLoading: productsLoading } = useBathroomProducts(true);
   const { data: installations, isLoading: installationsLoading } = useBathroomInstallations(true);
   const { data: categories } = useBathroomCategories(true);
   const createInquiry = useCreateProductInquiry();
+  const createBathroomSolution = useCreateBathroomSolution();
 
   // Filter products
   const filteredProducts = products?.filter(product => {
@@ -63,6 +73,22 @@ const BathroomSolutions = () => {
           inquiry_type: "general",
         });
       }
+    });
+  };
+
+  const handleNewSolutionSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createBathroomSolution.mutate(newSolutionForm, {
+      onSuccess: () => {
+        setNewSolutionDialogOpen(false);
+        setNewSolutionForm({
+          title: "",
+          description: "",
+          image_url: "",
+          category: "",
+          features: [],
+        });
+      },
     });
   };
 
@@ -193,6 +219,11 @@ const BathroomSolutions = () => {
               ))}
             </div>
           )}
+          <div className="text-center mt-8">
+            <Button onClick={() => setNewSolutionDialogOpen(true)} className="bg-gradient-to-r from-[#417ABD] to-[#5EB447] text-white">
+              Add New Bathroom Solution
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -314,6 +345,70 @@ const BathroomSolutions = () => {
               </Button>
               <Button type="submit" disabled={createInquiry.isPending}>
                 {createInquiry.isPending ? 'Sending...' : 'Send Inquiry'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add New Bathroom Solution Dialog */}
+      <Dialog open={newSolutionDialogOpen} onOpenChange={setNewSolutionDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Bathroom Solution</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleNewSolutionSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="new_solution_title">Title *</Label>
+              <Input
+                id="new_solution_title"
+                value={newSolutionForm.title}
+                onChange={(e) => setNewSolutionForm(prev => ({ ...prev, title: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="new_solution_description">Description *</Label>
+              <Textarea
+                id="new_solution_description"
+                value={newSolutionForm.description}
+                onChange={(e) => setNewSolutionForm(prev => ({ ...prev, description: e.target.value }))}
+                rows={3}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="new_solution_image_url">Image URL *</Label>
+              <Input
+                id="new_solution_image_url"
+                value={newSolutionForm.image_url}
+                onChange={(e) => setNewSolutionForm(prev => ({ ...prev, image_url: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="new_solution_category">Category *</Label>
+              <Input
+                id="new_solution_category"
+                value={newSolutionForm.category}
+                onChange={(e) => setNewSolutionForm(prev => ({ ...prev, category: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="new_solution_features">Features (comma separated)</Label>
+              <Input
+                id="new_solution_features"
+                value={newSolutionForm.features.join(", ")}
+                onChange={(e) => setNewSolutionForm(prev => ({ ...prev, features: e.target.value.split(",").map(f => f.trim()) }))}
+              />
+            </div>
+            <div className="flex justify-end space-x-4">
+              <Button type="button" variant="outline" onClick={() => setNewSolutionDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={createBathroomSolution.isPending}>
+                {createBathroomSolution.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           </form>

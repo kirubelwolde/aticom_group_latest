@@ -4,7 +4,8 @@ import { BathroomSolutionsService } from "@/services/bathroomSolutionsService";
 import type { 
   BathroomProductFormData, 
   BathroomInstallationFormData, 
-  ProductInquiryFormData 
+  ProductInquiryFormData, 
+  BathroomSolutionFormData 
 } from "@/types/bathroom-solutions";
 import { useToast } from "@/hooks/use-toast";
 
@@ -202,6 +203,30 @@ export const useCreateProductInquiry = () => {
       toast({
         title: "Error",
         description: `Failed to submit inquiry: ${error.message}`,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+export const useCreateBathroomSolution = () => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: (data: BathroomSolutionFormData) =>
+      BathroomSolutionsService.createBathroomSolution(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bathroom-solutions"] });
+      toast({
+        title: "Success",
+        description: "Bathroom solution created successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: `Failed to create bathroom solution: ${error.message}`,
         variant: "destructive",
       });
     },

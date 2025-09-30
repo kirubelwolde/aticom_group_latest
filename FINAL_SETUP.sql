@@ -301,15 +301,15 @@ SELECT
   '[
     {
       "name": "Ethiopian Airlines",
-      "logo": "/lovable-uploads/579ae00d-1b54-4620-bb45-aae2d62bf7f2.png"
+      "logo": "/lovable-uploads/c3.jpg"
     },
     {
       "name": "Commercial Bank of Ethiopia", 
-      "logo": "/lovable-uploads/ce2da46f-e428-4a5f-8ccf-2f861740c234.png"
+      "logo": "/lovable-uploads/commercial_bank.jpg"
     },
     {
       "name": "Ethiopian Investment Commission",
-      "logo": "/lovable-uploads/914150f2-c3e2-41f8-a334-a1c78c6c7692.png"
+      "logo": "/lovable-uploads/c4.jpg"
     }
   ]'::jsonb,
   '/lovable-uploads/579ae00d-1b54-4620-bb45-aae2d62bf7f2.png',
