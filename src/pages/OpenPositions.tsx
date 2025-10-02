@@ -206,11 +206,11 @@ const OpenPositions = () => {
 
     // After saving the application, notify HR via Supabase Edge Function
     try {
-      const { error: emailError } = await supabase.functionsinvoke('send-application-email', {
+      const { error: emailError } = await supabase.functions.invoke('send-application-email', {
         body: {
           recipient: 'hr@aticomgroup.com', // test HR email; can be configured later
           applicant: {
-            name: appForm.name,
+            name: appForm.name,   
             email: appForm.email,
             phone: appForm.phone,
             experience: appForm.experience,

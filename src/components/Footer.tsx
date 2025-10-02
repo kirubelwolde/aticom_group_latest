@@ -21,7 +21,7 @@ const Footer = () => {
   const quickLinks = [
     { name: "Home", path: "/" },
     { name: "About Us", path: "/about" },
-    { name: "Manufacturing", path: "/manufacturing" },
+    
     { name: "Agriculture", path: "/agriculture" },
     { name: "Real Estate", path: "/real-estate" },
     { name: "News", path: "/news" },
@@ -35,7 +35,7 @@ const Footer = () => {
     { name: "Cereal Crops", path: "/cereal-crops" },
     { name: "Coffee Export", path: "/coffee" },
     { name: "Real Estate", path: "/real-estate" },
-    { name: "Construction Materials", path: "/manufacturing" },
+    
   ];
 
   const scrollToTop = () => {
@@ -100,7 +100,7 @@ const Footer = () => {
                       <a href="tel:+2510947141516" className="hover:text-[#417ABD] transition-colors block">+251-09-47-14-15-16 (Sales Manager)</a>
                     </div>
                   </div>
-                  <div className="flex items-start text-gray-600">
+                  <div className="flex items-start text-gray-600">*
                     <Mail className="w-4 h-4 mr-3 text-[#5EB447] mt-0.5" />
                     <div className="space-y-1">
                       <a href="mailto:info@aticomgroup.com" className="hover:text-[#417ABD] transition-colors block">info@aticomgroup.com</a>
@@ -147,7 +147,7 @@ const Footer = () => {
 
             {/* Business Sectors */}
             <div className="lg:col-span-2">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">Our Sectors</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">Business Sectors</h3>
               <ul className="space-y-3">
                 {businessSectors.map((sector, index) => (
                   <li key={index}>

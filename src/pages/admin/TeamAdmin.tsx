@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import ImageUpload from '@/components/admin/ImageUpload';
 import { 
   Plus, 
   Edit, 
@@ -37,6 +39,7 @@ const TeamAdmin = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const fetchMembers = async () => {
     try {
@@ -90,6 +93,8 @@ const TeamAdmin = () => {
           title: "Success",
           description: "Team member created successfully",
         });
+        // Navigate to team page after successful creation
+        navigate('/team');
       } else {
         const { error } = await supabase
           .from('team_members')
@@ -244,15 +249,13 @@ const TeamAdmin = () => {
                 rows={4}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                value={editingMember.image_url || ''}
-                onChange={(e) => setEditingMember({...editingMember, image_url: e.target.value})}
-                placeholder="Enter image URL"
-              />
-            </div>
+            <ImageUpload
+              label="Profile Image"
+              value={editingMember.image_url || ''}
+              onChange={(url) => setEditingMember({...editingMember, image_url: url})}
+              bucketName="hero-cards"
+              placeholder="Upload team member photo"
+            />
             <div className="flex items-center space-x-2">
               <Switch
                 id="active"
@@ -282,16 +285,19 @@ const TeamAdmin = () => {
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
                 {/* Image */}
-                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
                   {member.image_url ? (
                     <img 
                       src={member.image_url} 
                       alt={member.name}
                       className="w-full h-full object-cover rounded-full"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                      }}
                     />
-                  ) : (
-                    <Users className="h-8 w-8 text-gray-400" />
-                  )}
+                  ) : null}
+                  <Users className={`h-8 w-8 text-gray-400 ${member.image_url ? 'hidden' : ''}`} />
                 </div>
 
                 {/* Content */}

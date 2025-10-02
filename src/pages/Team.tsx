@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,9 +17,31 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getTeamMembers, TeamMember } from "@/services/teamService";
 
 const Team = () => {
   const [activeTab, setActiveTab] = useState("team");
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch team members from database
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        const members = await getTeamMembers();
+        console.log('Fetched team members:', members); // Debug log
+        setTeamMembers(members);
+      } catch (error) {
+        console.error('Error fetching team members:', error);
+        // Set empty array on error to show the "no members" state
+        setTeamMembers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTeamMembers();
+  }, []);
 
   // Organization structure data
   const businessDivisions = [
@@ -75,65 +97,13 @@ const Team = () => {
     },
   ];
 
-  // Team members data
-  const executives = [
-    {
-      name: "ABDUREHMAN YASSIN",
-      position: "Chief Executive Officer (CEO)",
-      bio: "Founder and CEO leading ATICOM Investment Group with a vision for diversified growth and international excellence.",
-      image: "/lovable-uploads/11.jpg",
-      linkedin: "#",
-      email: "ceo@aticomgroup.com",
-      achievements: [
-        "Strategic Vision",
-        "Global Expansion",
-        "Leadership Excellence",
-      ],
-    },
-    {
-      name: "TESFAYE BIRHANU",
-      position: "Chief Operating Officer (COO)",
-      bio: "COO driving operational excellence across divisions, ensuring efficiency and delivery at scale.",
-      image: "/lovable-uploads/12.jpg",
-      linkedin: "#",
-      email: "coo@aticomgroup.com",
-      achievements: ["Process Excellence", "Team Leadership", "Innovation"],
-    },
-    {
-      name: "BIRUK ASMERA",
-      position: "Corporate Marketing and Sales",
-      bio: "Leads corporate marketing and sales strategy, strengthening brand presence and revenue growth.",
-      image: "/lovable-uploads/13.jpg",
-      linkedin: "#",
-      email: "sales@aticomgroup.com",
-      achievements: [
-        "Brand Development",
-        "Market Expansion",
-        "Strategic Partnerships",
-      ],
-    },
-    {
-      name: "ABDULAZIZ HUSSEIN",
-      position: "Corporate Finance and Procurement",
-      bio: "Oversees corporate finance and procurement, enabling sustainable growth through prudent resource management.",
-      image: "/lovable-uploads/14.jpg",
-      linkedin: "#",
-      email: "info@aticomgroup.com",
-      achievements: [
-        "Financial Strategy",
-        "Investment Management",
-        "Risk Assessment",
-      ],
-    },
-  ];
-
   const directors = [];
 
   const companyStats = [
     {
       icon: Users,
       label: "Team Members",
-      value: "150+",
+      value: `${teamMembers.length}+`,
       color: "text-[#417ABD]",
     },
     {
@@ -276,51 +246,88 @@ const Team = () => {
                   </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {executives.map((executive, index) => (
-                    <Card
-                      key={index}
-                      className="overflow-hidden hover:shadow-xl transition-all duration-300 group border-none"
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <div className="relative overflow-hidden h-64">
-                        <img
-                          src={executive.image}
-                          alt={executive.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                        <div className="absolute bottom-0 w-full p-3 text-white">
-                          <h3 className="font-bold text-base">{executive.name}</h3>
-                          <p className="text-white/80 text-xs">
-                            {executive.position}
-                          </p>
-                        </div>
-                        <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="flex gap-1">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="w-6 h-6 bg-white/20 hover:bg-white/30 text-white"
-                            >
-                              <Mail className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="w-6 h-6 bg-white/20 hover:bg-white/30 text-white"
-                            >
-                              <LinkedinIcon className="w-3 h-3" />
-                            </Button>
+                {loading ? (
+                  <div className="flex justify-center items-center h-64">
+                    <div className="text-gray-600">Loading team members...</div>
+                  </div>
+                ) : teamMembers.length > 0 ? (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {teamMembers.map((member, index) => (
+                      <Card
+                        key={member.id}
+                        className="overflow-hidden hover:shadow-xl transition-all duration-300 group border-none"
+                        style={{ animationDelay: `${index * 0.1}s` }}
+                      >
+                        <div className="relative overflow-hidden h-64">
+                          {member.image_url ? (
+                            <img
+                              src={member.image_url}
+                              alt={member.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+                              onError={(e) => {
+                                console.log('Image failed to load:', member.image_url);
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                          ) : null}
+                          <div className={`w-full h-full bg-gradient-to-br from-aticom-blue to-aticom-green flex items-center justify-center ${member.image_url ? 'hidden' : ''}`}>
+                            <div className="text-center text-white">
+                              <Users className="w-12 h-12 mx-auto mb-2 opacity-80" />
+                              <p className="text-sm font-medium">{member.name.split(' ')[0]}</p>
+                            </div>
+                          </div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                          <div className="absolute bottom-0 w-full p-3 text-white">
+                            <h3 className="font-bold text-base">{member.name}</h3>
+                            <p className="text-white/80 text-xs">
+                              {member.position}
+                            </p>
+                            {member.experience && (
+                              <p className="text-white/70 text-xs mt-1">
+                                {member.experience}
+                              </p>
+                            )}
+                          </div>
+                          <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="flex gap-1">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="w-6 h-6 bg-white/20 hover:bg-white/30 text-white"
+                              >
+                                <Mail className="w-3 h-3" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="w-6 h-6 bg-white/20 hover:bg-white/30 text-white"
+                              >
+                                <LinkedinIcon className="w-3 h-3" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <CardContent className="p-4">
-                        <p className="text-gray-600 text-xs">{executive.bio}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                        <CardContent className="p-4">
+                          <p className="text-gray-600 text-xs">{member.bio}</p>
+                          <div className="mt-2">
+                            <span className="text-xs text-aticom-blue font-medium">
+                              {member.department}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                      <Users className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No team members found</h3>
+                    <p className="text-gray-600">Team members will appear here once they are added.</p>
+                  </div>
+                )}
               </div>
             </section>
 

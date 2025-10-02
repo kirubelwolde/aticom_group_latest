@@ -47,7 +47,9 @@ const BusinessSectorsAdmin = () => {
         .order('order_index');
 
       if (error) throw error;
-      setSectors(data || []);
+      // Filter out Real Estate sector
+      const filtered = (data || []).filter((sector) => sector.title.toLowerCase() !== 'real estate');
+      setSectors(filtered);
     } catch (error) {
       console.error('Error fetching business sectors:', error);
       toast({
@@ -251,6 +253,7 @@ const BusinessSectorsAdmin = () => {
                 placeholder="Enter image URL"
               />
             </div>
+            
             <div className="space-y-2">
               <Label>Features</Label>
               <div className="flex gap-2">

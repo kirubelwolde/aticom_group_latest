@@ -1,7 +1,7 @@
 
 -- Create a proper admin authentication system using Supabase Auth
 -- First, let's create a admin_profiles table to store admin-specific data
-CREATE TABLE public.admin_profiles (
+CREATE TABLE IF NOT EXISTS public.admin_profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT NOT NULL UNIQUE,
   full_name TEXT,
@@ -15,12 +15,14 @@ CREATE TABLE public.admin_profiles (
 ALTER TABLE public.admin_profiles ENABLE ROW LEVEL SECURITY;
 
 -- Create policy that allows authenticated admin users to read their own profile
+DROP POLICY IF EXISTS "Admin users can view their own profile" ON public.admin_profiles;
 CREATE POLICY "Admin users can view their own profile" 
   ON public.admin_profiles 
   FOR SELECT 
   USING (auth.uid() = id);
 
 -- Create policy that allows authenticated admin users to update their own profile
+DROP POLICY IF EXISTS "Admin users can update their own profile" ON public.admin_profiles;
 CREATE POLICY "Admin users can update their own profile" 
   ON public.admin_profiles 
   FOR UPDATE 
@@ -44,6 +46,7 @@ END;
 $$;
 
 -- Create trigger to automatically create admin profile when admin user signs up
+DROP TRIGGER IF EXISTS on_auth_admin_user_created ON auth.users;
 CREATE TRIGGER on_auth_admin_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW 

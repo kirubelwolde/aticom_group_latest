@@ -1,6 +1,6 @@
 
 -- First, let's create the business_content table for detailed page content
-CREATE TABLE public.business_content (
+CREATE TABLE IF NOT EXISTS public.business_content (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   business_sector_id UUID REFERENCES public.business_sectors(id) NOT NULL,
   page_title TEXT NOT NULL,
@@ -16,10 +16,11 @@ CREATE TABLE public.business_content (
 
 -- Enable RLS for business_content
 ALTER TABLE public.business_content ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow all operations" ON public.business_content;
 CREATE POLICY "Allow all operations" ON public.business_content FOR ALL USING (true);
 
 -- Update hero_slides to have a business_sector_id reference
-ALTER TABLE public.hero_slides ADD COLUMN business_sector_id UUID REFERENCES public.business_sectors(id);
+ALTER TABLE public.hero_slides ADD COLUMN IF NOT EXISTS business_sector_id UUID REFERENCES public.business_sectors(id);
 
 -- Create a function to ensure we always have exactly 7 hero slides and 7 business sectors
 CREATE OR REPLACE FUNCTION ensure_seven_business_sectors()
@@ -116,5 +117,5 @@ $$;
 SELECT ensure_seven_business_sectors();
 
 -- Create indexes for better performance
-CREATE INDEX idx_business_content_sector_id ON public.business_content(business_sector_id);
-CREATE INDEX idx_hero_slides_sector_id ON public.hero_slides(business_sector_id);
+CREATE INDEX IF NOT EXISTS idx_business_content_sector_id ON public.business_content(business_sector_id);
+CREATE INDEX IF NOT EXISTS idx_hero_slides_sector_id ON public.hero_slides(business_sector_id);

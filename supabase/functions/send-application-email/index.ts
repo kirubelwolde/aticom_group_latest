@@ -111,7 +111,7 @@ serve(async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         // Use Resend's test sender to avoid domain verification during testing
-        from: "ATICOM Careers <onboarding@resend.dev>",
+        from: "ATICOM Careers <no-reply@aticomgroup.com>",
         to: [to],
         subject,
         html,

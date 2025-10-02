@@ -66,20 +66,51 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         .from(bucketName)
         .upload(filePath, file);
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          title: "Upload failed",
+          description: error.message || "Failed to upload image. Please try again.",
+          variant: "destructive",
+        });
+        setUploading(false);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        return;
+      }
 
       // Get public URL
       const { data: urlData } = supabase.storage
         .from(bucketName)
         .getPublicUrl(data.path);
 
-      onChange(urlData.publicUrl);
-      setPreview(null);
+      console.log('Supabase public URL:', urlData.publicUrl);
 
-      toast({
-        title: "Success",
-        description: "Image uploaded successfully",
-      });
+      // Check if the image is accessible
+      const checkImage = (url: string) => {
+        return new Promise((resolve, reject) => {
+          const img = new window.Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => reject(false);
+          img.src = url;
+        });
+      };
+
+      try {
+        await checkImage(urlData.publicUrl);
+        onChange(urlData.publicUrl);
+        setPreview(null);
+        toast({
+          title: "Success",
+          description: `Image uploaded. Public URL: ${urlData.publicUrl}`,
+        });
+      } catch {
+        toast({
+          title: "Upload failed",
+          description: "Image uploaded but cannot be accessed. Please check bucket permissions or try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error('Upload error:', error);
       toast({
@@ -134,7 +165,27 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             src={value}
             alt={label}
             className="w-full h-32 object-cover rounded-lg border"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              toast({
+                title: 'Image Load Error',
+                description: 'Could not load image from URL. Please check the URL or bucket permissions.',
+                variant: 'destructive',
+              });
+              // Show fallback link
+              const fallback = document.getElementById(`${label}-fallback-link`);
+              if (fallback) fallback.style.display = 'block';
+            }}
           />
+          <a
+            id={`${label}-fallback-link`}
+            href={value}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'none', color: 'red', fontSize: '0.9em', position: 'absolute', bottom: 8, left: 8, background: '#fff', padding: '2px 6px', borderRadius: '4px', border: '1px solid #f00' }}
+          >
+            Open image URL
+          </a>
           <Button
             type="button"
             variant="destructive"

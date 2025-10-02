@@ -1,6 +1,6 @@
 
 -- Create table for vision and mission content
-CREATE TABLE public.vision_mission (
+CREATE TABLE IF NOT EXISTS public.vision_mission (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   vision_title TEXT NOT NULL DEFAULT 'Our Vision',
   vision_content TEXT NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE public.vision_mission (
 );
 
 -- Create table for CSR content
-CREATE TABLE public.csr_content (
+CREATE TABLE IF NOT EXISTS public.csr_content (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL DEFAULT 'Corporate Social Responsibility',
   subtitle TEXT NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE public.csr_content (
 );
 
 -- Create table for partners content
-CREATE TABLE public.partners_content (
+CREATE TABLE IF NOT EXISTS public.partners_content (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL DEFAULT 'Our Trusted Partners',
   subtitle TEXT NOT NULL DEFAULT 'Building strong partnerships across Ethiopia and beyond',

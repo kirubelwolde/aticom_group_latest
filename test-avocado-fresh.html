@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Avocado Fresh Integration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avocado Fresh Integration Test</h1>
+    
+    <div class="test-section info">
+        <h2>Test Instructions</h2>
+        <p>This page helps you test the integration between the admin page and the public page for Avocado Fresh content.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 1: Test Admin Page</h2>
+        <div class="step">
+            <p><strong>1.1:</strong> Open the admin page: <a href="http://localhost:8080/admin/avocado-fresh" target="_blank">http://localhost:8080/admin/avocado-fresh</a></p>
+        </div>
+        <div class="step">
+            <p><strong>1.2:</strong> Verify that the page loads and shows the BusinessContentAdmin interface</p>
+        </div>
+        <div class="step">
+            <p><strong>1.3:</strong> Make some changes to the content (e.g., update the page title, hero section, etc.)</p>
+        </div>
+        <div class="step">
+            <p><strong>1.4:</strong> Click the "Save Changes" button</p>
+        </div>
+        <div class="step">
+            <p><strong>1.5:</strong> Verify that you see a success message</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 2: Test Public Page</h2>
+        <div class="step">
+            <p><strong>2.1:</strong> Open the public page: <a href="http://localhost:8080/avocado-fresh" target="_blank">http://localhost:8080/avocado-fresh</a></p>
+        </div>
+        <div class="step">
+            <p><strong>2.2:</strong> Verify that the page loads and displays the dynamic content</p>
+        </div>
+        <div class="step">
+            <p><strong>2.3:</strong> Check if the changes you made in the admin page are reflected here</p>
+        </div>
+        <div class="step">
+            <p><strong>2.4:</strong> Verify that the page shows the DynamicBusinessPage content instead of hardcoded content</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 3: Verify Integration</h2>
+        <div class="step">
+            <p><strong>3.1:</strong> Go back to the admin page and make another change</p>
+        </div>
+        <div class="step">
+            <p><strong>3.2:</strong> Save the changes</p>
+        </div>
+        <div class="step">
+            <p><strong>3.3:</strong> Refresh the public page and verify the new changes appear</p>
+        </div>
+    </div>
+
+    <div class="test-section success">
+        <h2>Expected Results</h2>
+        <ul>
+            <li>Admin page should load and allow editing of content</li>
+            <li>Changes should save successfully</li>
+            <li>Public page should display dynamic content from the database</li>
+            <li>Changes made in admin should immediately reflect on the public page</li>
+            <li>No hardcoded content should be visible on the public page</li>
+        </ul>
+    </div>
+
+    <div class="test-section error">
+        <h2>Common Issues</h2>
+        <ul>
+            <li><strong>Database connection issues:</strong> Make sure Supabase is running and configured</li>
+            <li><strong>Content not loading:</strong> Check browser console for errors</li>
+            <li><strong>Changes not saving:</strong> Verify RLS policies and database permissions</li>
+            <li><strong>Hardcoded content still showing:</strong> Make sure the AvocadoFresh.tsx file was updated correctly</li>
+        </ul>
+    </div>
+
+    <script>
+        // Simple test to check if the pages are accessible
+        function testPageAccessibility() {
+            const adminUrl = 'http://localhost:8080/admin/avocado-fresh';
+            const publicUrl = 'http://localhost:8080/avocado-fresh';
+            
+            fetch(adminUrl)
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ Admin page is accessible');
+                    } else {
+                        console.log('❌ Admin page returned status:', response.status);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Admin page error:', error);
+                });
+            
+            fetch(publicUrl)
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ Public page is accessible');
+                    } else {
+                        console.log('❌ Public page returned status:', response.status);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Public page error:', error);
+                });
+        }
+        
+        // Run the test when the page loads
+        window.addEventListener('load', testPageAccessibility);
+    </script>
+</body>
+</html>
+

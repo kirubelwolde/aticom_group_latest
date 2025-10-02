@@ -11,7 +11,7 @@ const Agriculture = () => {
   const products = [
     {
       title: "ATICADO Fresh Avocado",
-      description: "Premium quality fresh avocados for international export markets",
+      description: "Premium quality fresh abvocados for international export markets",
       image: "/lovable-uploads/ce2da46f-e428-4a5f-8ccf-2f861740c234.png",
       path: "/avocado-fresh",
       badge: "Export Ready",

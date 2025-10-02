@@ -1,6 +1,6 @@
 
 -- 1. Create job_applications table
-CREATE TABLE public.job_applications (
+CREATE TABLE IF NOT EXISTS public.job_applications (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   job_position_id uuid NOT NULL REFERENCES public.job_positions(id) ON DELETE CASCADE,
   applicant_name text NOT NULL,
@@ -21,24 +21,28 @@ CREATE TABLE public.job_applications (
 ALTER TABLE public.job_applications ENABLE ROW LEVEL SECURITY;
 
 -- 3. Public (for now) can insert new applications (Apply Now).
+DROP POLICY IF EXISTS "Anyone can submit job applications" ON public.job_applications;
 CREATE POLICY "Anyone can submit job applications"
   ON public.job_applications
   FOR INSERT
   WITH CHECK (true);
 
 -- 4. Only admin (email ending with '@aticom.com') can SELECT, UPDATE, or DELETE
+DROP POLICY IF EXISTS "Admin can view all applications" ON public.job_applications;
 CREATE POLICY "Admin can view all applications"
   ON public.job_applications
   FOR SELECT
   TO authenticated
   USING (left(split_part(auth.email(), '@', 2), 10) = 'aticom.com');
 
+DROP POLICY IF EXISTS "Admin can update applications" ON public.job_applications;
 CREATE POLICY "Admin can update applications"
   ON public.job_applications
   FOR UPDATE
   TO authenticated
   USING (left(split_part(auth.email(), '@', 2), 10) = 'aticom.com');
 
+DROP POLICY IF EXISTS "Admin can delete applications" ON public.job_applications;
 CREATE POLICY "Admin can delete applications"
   ON public.job_applications
   FOR DELETE
