@@ -4,12 +4,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ImagePlus, Trash2, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface ImageUploadProps {
   value?: string;
   onChange: (value: string) => void;
   className?: string;
   disabled?: boolean;
+  bucketName?: string;
 }
 
 export function ImageUpload({
@@ -17,32 +20,94 @@ export function ImageUpload({
   onChange,
   className,
   disabled = false,
+  bucketName = "tile-images",
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please select an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please select an image smaller than 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsUploading(true);
       
-      // In a real implementation, you would upload to Supabase here
-      // For now, we'll just create a mock URL
+      // Create a unique filename
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      
-      // Simulate upload delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real implementation, you would get the public URL from Supabase
-      const publicUrl = `https://example.com/${fileName}`;
-      
-      onChange(publicUrl);
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = fileName; // Don't include bucket name in path since we're already uploading to the bucket
+
+      // Upload file to Supabase storage
+      const { data, error } = await supabase.storage
+        .from(bucketName)
+        .upload(filePath, file);
+
+      if (error) {
+        toast({
+          title: "Upload failed",
+          description: error.message || "Failed to upload image. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from(bucketName)
+        .getPublicUrl(data.path);
+
+      // Check if the image is accessible
+      const checkImage = (url: string) => {
+        return new Promise((resolve, reject) => {
+          const img = new window.Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => reject(false);
+          img.src = url;
+        });
+      };
+
+      try {
+        await checkImage(urlData.publicUrl);
+        onChange(urlData.publicUrl);
+        toast({
+          title: "Success",
+          description: "Image uploaded successfully",
+        });
+      } catch {
+        toast({
+          title: "Upload failed",
+          description: "Image uploaded but cannot be accessed. Please check bucket permissions.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      console.error('Error uploading image:', error);
-      // Handle error (e.g., show toast)
+      console.error('Upload error:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsUploading(false);
       // Reset file input

@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import ImageUpload from '@/components/admin/ImageUpload';
+import ImageUploadFixed from '@/components/admin/ImageUploadFixed';
 import { 
   Edit, 
   Save, 
@@ -221,6 +221,27 @@ const HeroCardsAdmin = () => {
   }) => {
     const [formData, setFormData] = useState(card);
 
+    // Auto-save function for image uploads
+    const handleAutoSave = async (updatedFormData: any) => {
+      if (!isNew && 'id' in card) {
+        console.log('🔄 Auto-saving after image upload...', updatedFormData);
+        try {
+          await onSave(updatedFormData);
+          toast({
+            title: "Auto-saved! 🎉",
+            description: "Image has been saved to database automatically",
+          });
+        } catch (error) {
+          console.error('❌ Auto-save failed:', error);
+          toast({
+            title: "Auto-save failed",
+            description: "Image uploaded but not saved. Please click Save manually.",
+            variant: "destructive",
+          });
+        }
+      }
+    };
+
     return (
       <Card className="mb-4">
         <CardHeader>
@@ -270,23 +291,41 @@ const HeroCardsAdmin = () => {
             </div>
           </div>
 
-          <ImageUpload
+          <ImageUploadFixed
             label="Primary Image"
             value={formData.primary_image}
             onChange={(url) => setFormData({ ...formData, primary_image: url })}
+            onUploadComplete={(url) => {
+              const updatedData = { ...formData, primary_image: url };
+              setFormData(updatedData);
+              handleAutoSave(updatedData);
+            }}
             required
+            bucketName="hero-cards"
           />
 
-          <ImageUpload
+          <ImageUploadFixed
             label="Secondary Image (Optional)"
             value={formData.secondary_image || ''}
             onChange={(url) => setFormData({ ...formData, secondary_image: url })}
+            onUploadComplete={(url) => {
+              const updatedData = { ...formData, secondary_image: url };
+              setFormData(updatedData);
+              handleAutoSave(updatedData);
+            }}
+            bucketName="hero-cards"
           />
 
-          <ImageUpload
+          <ImageUploadFixed
             label="Tertiary Image (Optional)"
             value={formData.tertiary_image || ''}
             onChange={(url) => setFormData({ ...formData, tertiary_image: url })}
+            onUploadComplete={(url) => {
+              const updatedData = { ...formData, tertiary_image: url };
+              setFormData(updatedData);
+              handleAutoSave(updatedData);
+            }}
+            bucketName="hero-cards"
           />
 
           <div className="grid grid-cols-2 gap-4">

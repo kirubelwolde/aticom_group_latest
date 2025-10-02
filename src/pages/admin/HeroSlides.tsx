@@ -95,14 +95,14 @@ const HeroSlidesAdmin = () => {
           // If already looks like a signed URL, skip
           if (url.includes('token=')) return;
 
-          // Case 1: public storage URL -> extract path after '/object/public/images/'
-          const publicPrefix = '/storage/v1/object/public/images/';
+          // Case 1: public storage URL -> extract path after '/object/public/hero-cards/'
+          const publicPrefix = '/storage/v1/object/public/hero-cards/';
           if (url.includes(publicPrefix)) {
             try {
               const idx = url.indexOf(publicPrefix);
               const filePath = url.substring(idx + publicPrefix.length);
               const { data, error } = await supabase.storage
-                .from('images')
+                .from('hero-cards')
                 .createSignedUrl(filePath, 60 * 60 * 24 * 365);
               if (!error && data?.signedUrl) {
                 updates[s.id] = data.signedUrl;
@@ -115,7 +115,7 @@ const HeroSlidesAdmin = () => {
           if (!url.startsWith('http')) {
             try {
               const { data, error } = await supabase.storage
-                .from('images')
+                .from('hero-cards')
                 .createSignedUrl(url, 60 * 60 * 24 * 365);
               if (!error && data?.signedUrl) {
                 updates[s.id] = data.signedUrl;
@@ -148,14 +148,14 @@ const HeroSlidesAdmin = () => {
 
     try {
       const { error: uploadError } = await supabase.storage
-        .from('images') // Ensure you have a bucket named 'images' in Supabase Storage
+        .from('hero-cards') // Use the hero-cards bucket for hero slide images
         .upload(filePath, imageFile, { cacheControl: '3600', upsert: false });
 
       if (uploadError) throw uploadError;
 
       // Generate a long-lived signed URL so images are accessible even if the bucket is private
       const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-        .from('images')
+        .from('hero-cards')
         .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year
 
       if (signedUrlError || !signedUrlData?.signedUrl) throw signedUrlError ?? new Error('Failed to create signed URL');

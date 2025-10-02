@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Cards Debug Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .card { border: 1px solid #ccc; margin: 10px 0; padding: 15px; border-radius: 8px; }
+        .error { color: red; }
+        .success { color: green; }
+        .url { font-family: monospace; background: #f5f5f5; padding: 5px; word-break: break-all; }
+        img { max-width: 200px; max-height: 150px; border: 2px solid #ddd; margin: 5px; }
+        .broken { border-color: red !important; }
+        button { background: #007cba; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #005a87; }
+        .info { background: #e7f3ff; padding: 10px; border-radius: 4px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Hero Cards Debug Tool</h1>
+    <div class="info">
+        <strong>Instructions:</strong>
+        <ol>
+            <li>This tool will show you exactly what's in your database vs. what should be there</li>
+            <li>Click "Load Hero Cards" to see current database state</li>
+            <li>Click "Fix URLs" if you see broken image paths</li>
+        </ol>
+    </div>
+
+    <button onclick="loadHeroCards()">🔄 Load Hero Cards from Database</button>
+    <button onclick="fixDoublePathUrls()">🔧 Fix Double Path URLs</button>
+    <button onclick="testImageUrls()">🖼️ Test All Image URLs</button>
+
+    <div id="results"></div>
+
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://hlxlyrmxhetpocohnpbb.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhseGx5cm14aGV0cG9jb2huYmIiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcxODI2NzQ4NywiZXhwIjoyMDMzODQzNDg3fQ.VtJ0dVBg_zKRqD1d3aNa9VuED3PVJBpKE7QJQn-hc-Y'
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
+
+        async function loadHeroCards() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+
+            try {
+                const { data, error } = await supabase
+                    .from('hero_cards')
+                    .select('*')
+                    .order('order_index');
+
+                if (error) throw error;
+
+                let html = '<h2>📊 Database Results</h2>';
+                
+                if (!data || data.length === 0) {
+                    html += '<p class="error">❌ No hero cards found in database!</p>';
+                } else {
+                    html += `<p class="success">✅ Found ${data.length} hero cards</p>`;
+                    
+                    data.forEach((card, index) => {
+                        html += `
+                            <div class="card">
+                                <h3>${card.title} (ID: ${card.id})</h3>
+                                <p><strong>Subtitle:</strong> ${card.subtitle}</p>
+                                <p><strong>Route:</strong> ${card.route}</p>
+                                <p><strong>Active:</strong> ${card.active ? '✅ Yes' : '❌ No'}</p>
+                                <p><strong>Order:</strong> ${card.order_index}</p>
+                                
+                                <div>
+                                    <h4>🖼️ Images:</h4>
+                                    
+                                    <div>
+                                        <strong>Primary Image:</strong>
+                                        <div class="url">${card.primary_image || 'Not set'}</div>
+                                        ${card.primary_image ? `<img src="${card.primary_image}" alt="Primary" onerror="this.classList.add('broken'); this.alt='❌ Failed to load'">` : ''}
+                                    </div>
+                                    
+                                    ${card.secondary_image ? `
+                                    <div>
+                                        <strong>Secondary Image:</strong>
+                                        <div class="url">${card.secondary_image}</div>
+                                        <img src="${card.secondary_image}" alt="Secondary" onerror="this.classList.add('broken'); this.alt='❌ Failed to load'">
+                                    </div>
+                                    ` : ''}
+                                    
+                                    ${card.tertiary_image ? `
+                                    <div>
+                                        <strong>Tertiary Image:</strong>
+                                        <div class="url">${card.tertiary_image}</div>
+                                        <img src="${card.tertiary_image}" alt="Tertiary" onerror="this.classList.add('broken'); this.alt='❌ Failed to load'">
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                resultsDiv.innerHTML = html;
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function fixDoublePathUrls() {
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                // First, let's see what needs fixing
+                const { data: beforeData, error: beforeError } = await supabase
+                    .from('hero_cards')
+                    .select('*');
+
+                if (beforeError) throw beforeError;
+
+                let needsFixing = [];
+                beforeData.forEach(card => {
+                    if (card.primary_image && card.primary_image.includes('/hero-cards/hero-cards/')) {
+                        needsFixing.push({id: card.id, field: 'primary_image', old: card.primary_image});
+                    }
+                    if (card.secondary_image && card.secondary_image.includes('/hero-cards/hero-cards/')) {
+                        needsFixing.push({id: card.id, field: 'secondary_image', old: card.secondary_image});
+                    }
+                    if (card.tertiary_image && card.tertiary_image.includes('/hero-cards/hero-cards/')) {
+                        needsFixing.push({id: card.id, field: 'tertiary_image', old: card.tertiary_image});
+                    }
+                });
+
+                if (needsFixing.length === 0) {
+                    resultsDiv.innerHTML = '<p class="success">✅ No double path URLs found! All URLs are correct.</p>';
+                    return;
+                }
+
+                // Fix each URL individually
+                let fixed = 0;
+                for (let fix of needsFixing) {
+                    const newUrl = fix.old.replace('/hero-cards/hero-cards/', '/hero-cards/');
+                    
+                    const { error } = await supabase
+                        .from('hero_cards')
+                        .update({ [fix.field]: newUrl })
+                        .eq('id', fix.id);
+
+                    if (!error) fixed++;
+                }
+
+                resultsDiv.innerHTML = `
+                    <h2>🔧 URL Fix Results</h2>
+                    <p class="success">✅ Fixed ${fixed} out of ${needsFixing.length} URLs</p>
+                    <p>Click "Load Hero Cards" to see the updated results.</p>
+                `;
+
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">❌ Error fixing URLs: ${error.message}</p>`;
+            }
+        }
+
+        async function testImageUrls() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Testing image URLs...</p>';
+
+            try {
+                const { data, error } = await supabase
+                    .from('hero_cards')
+                    .select('*')
+                    .order('order_index');
+
+                if (error) throw error;
+
+                let html = '<h2>🧪 Image URL Test Results</h2>';
+                
+                for (let card of data) {
+                    html += `<div class="card"><h3>${card.title}</h3>`;
+                    
+                    const images = [
+                        { name: 'Primary', url: card.primary_image },
+                        { name: 'Secondary', url: card.secondary_image },
+                        { name: 'Tertiary', url: card.tertiary_image }
+                    ].filter(img => img.url);
+
+                    for (let img of images) {
+                        try {
+                            const response = await fetch(img.url, { method: 'HEAD' });
+                            const status = response.ok ? '✅ Accessible' : `❌ Error ${response.status}`;
+                            html += `
+                                <p><strong>${img.name}:</strong> ${status}</p>
+                                <div class="url">${img.url}</div>
+                            `;
+                        } catch (e) {
+                            html += `
+                                <p><strong>${img.name}:</strong> ❌ Network Error</p>
+                                <div class="url">${img.url}</div>
+                            `;
+                        }
+                    }
+                    html += '</div>';
+                }
+
+                resultsDiv.innerHTML = html;
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        // Auto-load on page load
+        window.onload = () => {
+            loadHeroCards();
+        };
+    </script>
+</body>
+</html>
+
+

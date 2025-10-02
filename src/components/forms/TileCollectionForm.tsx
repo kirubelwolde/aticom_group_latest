@@ -246,9 +246,12 @@ export function TileCollectionForm({
                 <FormItem>
                   <FormLabel>Image</FormLabel>
                   <ImageUpload
+                    label="Collection Image"
                     value={field.value || ''}
                     onChange={handleImageUpload}
-                    placeholder="Upload tile collection image" label={''}                  />
+                    placeholder="Upload tile collection image"
+                    bucketName="tile-images"
+                  />
                   <FormMessage />
                 </FormItem>
               )}

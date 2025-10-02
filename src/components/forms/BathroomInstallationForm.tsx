@@ -123,9 +123,12 @@ const BathroomInstallationForm: React.FC<BathroomInstallationFormProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <ImageUpload
+              label="Installation Image"
               value={formData.image_url}
               onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
-              placeholder="Upload installation image" label={''}            />
+              placeholder="Upload installation image"
+              bucketName="tile-images"
+            />
 
             <div>
               <Label htmlFor="description">Description</Label>

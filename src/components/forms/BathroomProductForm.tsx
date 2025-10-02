@@ -198,9 +198,12 @@ const BathroomProductForm: React.FC<BathroomProductFormProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <ImageUpload
+              label="Product Image"
               value={formData.image_url}
               onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
-              placeholder="Upload product image" label={''}            />
+              placeholder="Upload product image"
+              bucketName="tile-images"
+            />
 
             <div>
               <Label htmlFor="description">Description</Label>

@@ -4,9 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Loader2, Check } from 'lucide-react';
 
-interface ImageUploadProps {
+interface ImageUploadFixedProps {
   label: string;
   value: string;
   onChange: (url: string) => void;
@@ -14,18 +14,22 @@ interface ImageUploadProps {
   required?: boolean;
   disabled?: boolean;
   bucketName?: string;
+  onUploadComplete?: (url: string) => void; // New callback for immediate save
 }
-const ImageUpload: React.FC<ImageUploadProps> = ({
+
+const ImageUploadFixed: React.FC<ImageUploadFixedProps> = ({
   label,
   value,
   onChange,
   placeholder = "https://...",
   required = false,
   disabled = false,
-  bucketName = "hero-cards"
+  bucketName = "hero-cards",
+  onUploadComplete
 }) => {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -54,12 +58,15 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     }
 
     setUploading(true);
+    setUploadSuccess(false);
     
     try {
       // Create a unique filename
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = fileName; // Don't include bucket name in path since we're already uploading to the bucket
+      const filePath = fileName; // Don't include bucket name in path
+
+      console.log(`🔄 Uploading to bucket: ${bucketName}, path: ${filePath}`);
 
       // Upload file to Supabase storage
       const { data, error } = await supabase.storage
@@ -67,52 +74,47 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         .upload(filePath, file);
 
       if (error) {
+        console.error('❌ Upload error:', error);
         toast({
           title: "Upload failed",
           description: error.message || "Failed to upload image. Please try again.",
           variant: "destructive",
         });
-        setUploading(false);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
         return;
       }
+
+      console.log('✅ Upload successful:', data);
 
       // Get public URL
       const { data: urlData } = supabase.storage
         .from(bucketName)
         .getPublicUrl(data.path);
 
-      console.log('Supabase public URL:', urlData.publicUrl);
+      const publicUrl = urlData.publicUrl;
+      console.log('🔗 Generated public URL:', publicUrl);
 
-      // Check if the image is accessible
-      const checkImage = (url: string) => {
-        return new Promise((resolve, reject) => {
-          const img = new window.Image();
-          img.onload = () => resolve(true);
-          img.onerror = () => reject(false);
-          img.src = url;
-        });
-      };
+      // Update the form immediately
+      onChange(publicUrl);
+      setPreview(null);
+      setUploadSuccess(true);
 
-      try {
-        await checkImage(urlData.publicUrl);
-        onChange(urlData.publicUrl);
-        setPreview(null);
-        toast({
-          title: "Success",
-          description: `Image uploaded. Public URL: ${urlData.publicUrl}`,
-        });
-      } catch {
-        toast({
-          title: "Upload failed",
-          description: "Image uploaded but cannot be accessed. Please check bucket permissions or try again.",
-          variant: "destructive",
-        });
+      // Show success message
+      toast({
+        title: "Upload successful! 📸",
+        description: `Image uploaded to storage. Click "Save" to update the database.`,
+      });
+
+      // Call the completion callback if provided
+      if (onUploadComplete) {
+        console.log('🚀 Calling onUploadComplete callback');
+        onUploadComplete(publicUrl);
       }
+
+      // Auto-hide success indicator after 3 seconds
+      setTimeout(() => setUploadSuccess(false), 3000);
+
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('❌ Upload error:', error);
       toast({
         title: "Upload failed",
         description: "Failed to upload image. Please try again.",
@@ -147,6 +149,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const removeImage = () => {
     onChange('');
     setPreview(null);
+    setUploadSuccess(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -156,6 +159,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     <div className="space-y-3">
       <Label htmlFor={`${label}-input`}>
         {label} {required && <span className="text-red-500">*</span>}
+        {uploadSuccess && <span className="text-green-500 ml-2">✅ Uploaded!</span>}
       </Label>
       
       {/* Current image preview */}
@@ -172,20 +176,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 description: 'Could not load image from URL. Please check the URL or bucket permissions.',
                 variant: 'destructive',
               });
-              // Show fallback link
-              const fallback = document.getElementById(`${label}-fallback-link`);
-              if (fallback) fallback.style.display = 'block';
             }}
           />
-          <a
-            id={`${label}-fallback-link`}
-            href={value}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: 'none', color: 'red', fontSize: '0.9em', position: 'absolute', bottom: 8, left: 8, background: '#fff', padding: '2px 6px', borderRadius: '4px', border: '1px solid #f00' }}
-          >
-            Open image URL
-          </a>
           <Button
             type="button"
             variant="destructive"
@@ -234,17 +226,19 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         
         <Button
           type="button"
-          variant="outline"
+          variant={uploadSuccess ? "default" : "outline"}
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading || disabled}
           className="flex-1"
         >
           {uploading ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : uploadSuccess ? (
+            <Check className="w-4 h-4 mr-2" />
           ) : (
             <Upload className="w-4 h-4 mr-2" />
           )}
-          {uploading ? 'Uploading...' : 'Upload Image'}
+          {uploading ? 'Uploading...' : uploadSuccess ? 'Uploaded!' : 'Upload Image'}
         </Button>
 
         {!value && !preview && (
@@ -288,10 +282,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             className="mt-1 text-sm"
             disabled={disabled}
           />
+          <p className="text-xs text-gray-500 mt-1">
+            ✅ Image uploaded to storage. Click "Save" button to save to database.
+          </p>
         </div>
       )}
     </div>
   );
 };
 
-export default ImageUpload;
+export default ImageUploadFixed;

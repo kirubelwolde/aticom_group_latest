@@ -143,9 +143,11 @@ export function TileInstallationForm({
                     </div>
                   ) : (
                     <ImageUpload
+                      label="Installation Image"
                       value={field.value || ''}
                       onChange={handleImageUpload}
                       placeholder="Upload an image"
+                      bucketName="tile-images"
                     />
                   )}
                 </div>

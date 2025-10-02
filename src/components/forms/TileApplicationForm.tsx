@@ -104,9 +104,11 @@ const TileApplicationForm: React.FC<TileApplicationFormProps> = ({
           </CardHeader>
           <CardContent>
             <ImageUpload
+              label="Application Image"
               value={formData.image_url}
               onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
               placeholder="Upload application image"
+              bucketName="tile-images"
             />
           </CardContent>
         </Card>
