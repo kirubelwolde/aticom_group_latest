@@ -19,6 +19,7 @@ interface CSRContent {
   main_title: string;
   initiatives: CSRInitiative[];
   image_url: string | null;
+  hero_image?: string | null;
   cta_text: string;
   cta_link: string;
 }
@@ -50,6 +51,7 @@ const CSRSection = () => {
             main_title: data.main_title,
             initiatives: Array.isArray(data.initiatives) ? (data.initiatives as unknown as CSRInitiative[]) : [],
             image_url: data.image_url,
+            hero_image: (data as any).hero_image ?? null,
             cta_text: data.cta_text,
             cta_link: data.cta_link
           });
@@ -90,6 +92,7 @@ const CSRSection = () => {
       }
     ],
     image_url: "/lovable-uploads/579ae00d-1b54-4620-bb45-aae2d62bf7f2.png",
+    hero_image: "/lovable-uploads/579ae00d-1b54-4620-bb45-aae2d62bf7f2.png",
     cta_text: "Learn More About Our CSR Initiatives",
     cta_link: "/csr"
   };
@@ -176,10 +179,10 @@ const CSRSection = () => {
             </Button>
           </div>
 
-          {displayContent.image_url && (
+          {(displayContent.hero_image || displayContent.image_url) && (
             <div className="relative animate-fade-in">
               <img
-                src={displayContent.image_url}
+                src={displayContent.hero_image || displayContent.image_url || ''}
                 alt="CSR Activities"
                 className="w-full rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300"
               />

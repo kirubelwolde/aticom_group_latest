@@ -325,7 +325,7 @@ const CSRAdmin = () => {
               placeholder="Upload hero image for CSR page"
               required={false}
               disabled={previewMode}
-              bucketName="csr-images"
+              bucketName="hero-cards"
             />
           </CardContent>
         </Card>
