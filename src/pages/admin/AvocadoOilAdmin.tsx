@@ -1,4 +1,3 @@
-
 import React from 'react';
 import BusinessContentAdmin from '@/components/admin/BusinessContentAdmin';
 

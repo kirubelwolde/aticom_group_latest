@@ -40,7 +40,7 @@ const AdminLayout = () => {
   };
 
   const businessSectorPages = [
-    { path: '/admin/real-estate', label: 'Real Estate', icon: Home },
+    // { path: '/admin/real-estate', label: 'Real Estate', icon: Home }, // disabled
     { path: '/admin/avocado-fresh', label: 'ATICADO Fresh', icon: TreePine },
     { path: '/admin/avocado-oil', label: 'ATICADO Oil', icon: Droplets },
     { path: '/admin/cereal-crops', label: 'Cereal Crops', icon: Wheat },

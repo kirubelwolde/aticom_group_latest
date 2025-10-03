@@ -32,19 +32,20 @@ const Navigation = () => {
         { name: "Porcelane & Ceramic Tiles (Arerti)", path: "/ceramic-tiles" },
       ]
     },
-    {
-      category: "Real Estate Development",
-      items: [
-        { name: "Pislando (Sister Company)", path: "/pislando" },
-        { name: "Our Properties", path: "/real-estate" },
-      ]
-    },
+    // its is not essentail for now 
+    // {
+    //   category: "Real Estate Development",
+    //   items: [
+    //     { name: "Pislando (Sister Company)", path: "/pislando" },
+    //     { name: "Our Properties", path: "/real-estate" },
+    //   ]
+    // },
     {
       category: "Exports",
       items: [
         { name: "Coffee", path: "/coffee" },
         { name: "Cereal Crops", path: "/cereal-crops" },
-        { name: "Oil Seeds", path: "/oil-seeds" },
+         //// ** its not essential for the momment  { name: "Oil Seeds", path: "/oil-seeds" },
         { name: "Fresh Avocado", path: "/avocado-fresh" },
       ]
     }

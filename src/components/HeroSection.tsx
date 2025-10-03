@@ -188,7 +188,8 @@ const HeroSection = () => {
 
   // Helper function to determine route based on slide title
   const getRouteForSlide = (title: string): string => {
-    if (title.toLowerCase().includes('real estate')) return '/real-estate';
+    // Real Estate temporarily disabled
+    if (title.toLowerCase().includes('real estate')) return '/about';
     if (title.toLowerCase().includes('avocado') && title.toLowerCase().includes('fresh')) return '/avocado-fresh';
     if (title.toLowerCase().includes('avocado') && title.toLowerCase().includes('oil')) return '/avocado-oil';
     if (title.toLowerCase().includes('coffee')) return '/coffee';
@@ -201,7 +202,8 @@ const HeroSection = () => {
 
   // Helper function to determine button text based on slide title
   const getButtonTextForSlide = (title: string): string => {
-    if (title.toLowerCase().includes('real estate')) return 'Explore Real Estate';
+    // Real Estate temporarily disabled
+    if (title.toLowerCase().includes('real estate')) return 'Learn More';
     if (title.toLowerCase().includes('avocado')) return 'Explore Avocado Business';
     if (title.toLowerCase().includes('coffee')) return 'Explore Coffee Export';
     if (title.toLowerCase().includes('cereal')) return 'Explore Cereal Export';

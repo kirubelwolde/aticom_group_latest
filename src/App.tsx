@@ -18,7 +18,7 @@ import OrganizationStructure from "./pages/OrganizationStructure";
 import NotFound from "./pages/NotFound";
 
 // Business sector pages
-import RealEstate from "./pages/RealEstate";
+// import RealEstate from "./pages/RealEstate"; // disabled temporarily
 import AvocadoFresh from "./pages/AvocadoFresh";
 import AvocadoOil from "./pages/AvocadoOil";
 import CerealCrops from "./pages/CerealCrops";
@@ -46,7 +46,7 @@ import HeroSlides from "./pages/admin/HeroSlides";
 import HeroCardsAdmin from "./pages/admin/HeroCardsAdmin";
 import CoffeeAdmin from "./pages/admin/CoffeeAdmin";
 import CerealCropsAdmin from "./pages/admin/CerealCropsAdmin";
-import RealEstateAdmin from "./pages/admin/RealEstateAdmin";
+// import RealEstateAdmin from "./pages/admin/RealEstateAdmin"; // disabled temporarily
 import AvocadoFreshAdmin from "./pages/admin/AvocadoFreshAdmin";
 import AvocadoOilAdmin from "./pages/admin/AvocadoOilAdmin";
 import BathroomSolutionsAdmin from "./pages/admin/BathroomSolutionsAdmin";
@@ -83,7 +83,8 @@ const App = () => (
               <Route path="/organization-structure" element={<Layout><OrganizationStructure /></Layout>} />
               
               {/* Business Sectors */}
-              <Route path="/real-estate" element={<RealEstate />} />
+              {/** Real Estate temporarily disabled **/}
+              {/** <Route path="/real-estate" element={<RealEstate />} /> **/}
               <Route path="/avocado-fresh" element={<AvocadoFresh />} />
               <Route path="/avocado-oil" element={<AvocadoOil />} />
               <Route path="/cereal-crops" element={<CerealCrops />} />
@@ -117,7 +118,8 @@ const App = () => (
                 <Route path="hero-cards" element={<HeroCardsAdmin />} />
                 <Route path="coffee" element={<CoffeeAdmin />} />
                 <Route path="cereal-crops" element={<CerealCropsAdmin />} />
-                <Route path="real-estate" element={<RealEstateAdmin />} />
+                {/** Real Estate Admin temporarily disabled **/}
+                {/** <Route path="real-estate" element={<RealEstateAdmin />} /> **/}
                 <Route path="avocado-fresh" element={<AvocadoFreshAdmin />} />
                 <Route path="avocado-oil" element={<AvocadoOilAdmin />} />
                 <Route path="bathroom-solutions" element={<BathroomSolutionsFullAdmin />} />

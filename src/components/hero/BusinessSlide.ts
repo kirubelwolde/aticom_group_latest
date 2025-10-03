@@ -9,14 +9,15 @@ export interface BusinessSlide {
 }
 
 export const businessSlides: BusinessSlide[] = [
-  {
-    title: "Real Estate Development",
-    subtitle: "Building Ethiopia's Future",
-    description: "Modern residential and commercial properties that shape Ethiopia's urban landscape with quality and innovation.",
-    image: "https://nairametrics.com/wp-content/uploads/2022/03/Property-Development.jpg",
-    route: "/real-estate",
-    buttonText: "Explore Real Estate"
-  },
+  // Real Estate temporarily disabled
+  // {
+  //   title: "Real Estate Development",
+  //   subtitle: "Building Ethiopia's Future",
+  //   description: "Modern residential and commercial properties that shape Ethiopia's urban landscape with quality and innovation.",
+  //   image: "https://nairametrics.com/wp-content/uploads/2022/03/Property-Development.jpg",
+  //   route: "/real-estate",
+  //   buttonText: "Explore Real Estate"
+  // },
   {
     title: "ATICADO Fresh Avocado",
     subtitle: "Premium Ethiopian Avocados",

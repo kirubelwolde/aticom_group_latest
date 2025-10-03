@@ -23,7 +23,7 @@ const Footer = () => {
     { name: "About Us", path: "/about" },
     
     { name: "Agriculture", path: "/agriculture" },
-    { name: "Real Estate", path: "/real-estate" },
+    // { name: "Real Estate", path: "/real-estate" },
     { name: "News", path: "/news" },
     { name: "Careers", path: "/open-positions" },
     { name: "Contact", path: "/contact" },
@@ -34,7 +34,7 @@ const Footer = () => {
     { name: "Aticado Oil", path: "/avocado-oil" },
     { name: "Cereal Crops", path: "/cereal-crops" },
     { name: "Coffee Export", path: "/coffee" },
-    { name: "Real Estate", path: "/real-estate" },
+    // { name: "Real Estate", path: "/real-estate" },
     
   ];
 

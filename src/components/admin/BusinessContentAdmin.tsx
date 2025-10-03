@@ -56,8 +56,52 @@ const BusinessContentAdmin: React.FC<BusinessContentAdminProps> = ({ sectorRoute
         .eq('business_sector_id', sector.id)
         .single();
 
-      if (error) throw error;
-      setContent(data);
+      if (error) {
+        // If no row exists, create a default content row
+        // PGRST116 indicates no rows found for single()
+        if ((error as any).code === 'PGRST116') {
+          const defaultContent = {
+            business_sector_id: sector.id,
+            page_title: sectorTitle,
+            hero_section: {
+              title: sectorTitle,
+              subtitle: '',
+              description: '',
+              background_image: ''
+            },
+            about_section: {
+              title: '',
+              content: '',
+              image: ''
+            },
+            features_section: {
+              title: '',
+              features: []
+            },
+            gallery_images: [],
+            cta_section: {
+              title: '',
+              description: '',
+              button_text: '',
+              button_link: ''
+            },
+            meta_description: ''
+          } as any;
+
+          const { data: inserted, error: insertError } = await supabase
+            .from('business_content')
+            .insert(defaultContent)
+            .select('*')
+            .single();
+
+          if (insertError) throw insertError;
+          setContent(inserted as any);
+        } else {
+          throw error;
+        }
+      } else {
+        setContent(data);
+      }
     } catch (error) {
       console.error('Error fetching content:', error);
       toast({

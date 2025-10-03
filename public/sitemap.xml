@@ -62,12 +62,14 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Real Estate temporarily removed
   <url>
     <loc>https://aticomgroup.com/real-estate</loc>
     <lastmod>2025-01-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+  -->
   
   <url>
     <loc>https://aticomgroup.com/manufacturing</loc>

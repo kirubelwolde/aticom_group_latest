@@ -26,22 +26,24 @@ const VisionMissionSection = () => {
           .from('vision_mission')
           .select('*')
           .eq('active', true)
-          .single();
+          .order('updated_at', { ascending: false })
+          .limit(1);
 
         if (error && error.code !== 'PGRST116') {
           console.error('Error fetching vision mission:', error);
           return;
         }
 
-        if (data) {
+        const row = Array.isArray(data) ? data[0] : (data as any);
+        if (row) {
           setContent({
-            vision_title: data.vision_title,
-            vision_content: data.vision_content,
-            vision_points: data.vision_points || [],
-            mission_title: data.mission_title,
-            mission_content: data.mission_content,
-            mission_points: data.mission_points || [],
-            core_values: Array.isArray(data.core_values) ? data.core_values as { title: string; description: string }[] : []
+            vision_title: row.vision_title,
+            vision_content: row.vision_content,
+            vision_points: row.vision_points || [],
+            mission_title: row.mission_title,
+            mission_content: row.mission_content,
+            mission_points: row.mission_points || [],
+            core_values: Array.isArray(row.core_values) ? (row.core_values as { title: string; description: string }[]) : []
           });
         }
       } catch (error) {

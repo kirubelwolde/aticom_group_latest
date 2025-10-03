@@ -15,6 +15,17 @@ interface VisionMissionData {
   hero_image?: string;
 }
 
+const resolveHeroImageUrl = (raw?: string): string | undefined => {
+  if (!raw) return undefined;
+  if (raw.startsWith('http')) return raw;
+  try {
+    const { data } = supabase.storage.from('hero-images').getPublicUrl(raw);
+    return data.publicUrl || raw;
+  } catch {
+    return raw;
+  }
+};
+
 const VisionMission = () => {
   const [content, setContent] = useState<VisionMissionData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,22 +37,24 @@ const VisionMission = () => {
           .from('vision_mission')
           .select('*')
           .eq('active', true)
-          .single();
+          .order('updated_at', { ascending: false })
+          .limit(1);
 
         if (error && error.code !== 'PGRST116') {
           console.error('Error fetching vision mission:', error);
         }
 
-        if (data) {
+        const row = Array.isArray(data) ? data[0] : (data as any);
+        if (row) {
           setContent({
-            vision_title: data.vision_title || 'Our Vision',
-            vision_content: data.vision_content || '',
-            vision_points: data.vision_points || [],
-            mission_title: data.mission_title || 'Our Mission',
-            mission_content: data.mission_content || '',
-            mission_points: data.mission_points || [],
-            core_values: Array.isArray(data.core_values) ? data.core_values as { title: string; description: string }[] : [],
-            hero_image: (data as any).hero_image
+            vision_title: row.vision_title || 'Our Vision',
+            vision_content: row.vision_content || '',
+            vision_points: row.vision_points || [],
+            mission_title: row.mission_title || 'Our Mission',
+            mission_content: row.mission_content || '',
+            mission_points: row.mission_points || [],
+            core_values: Array.isArray(row.core_values) ? (row.core_values as { title: string; description: string }[]) : [],
+            hero_image: (row as any).hero_image
           });
         }
       } catch (error) {
@@ -67,16 +80,21 @@ const VisionMission = () => {
       <SeoHead 
         title="Vision & Mission - ATICOM Investment Group"
         description="Discover ATICOM's vision for Ethiopia's future and our mission to drive sustainable economic growth through diversified business excellence."
-        keywords="ATICOM vision, ATICOM mission, Ethiopia business group, sustainable development, economic growth"
-        pageRoute="/vision-mission"
+        keywords={[
+          'ATICOM vision',
+          'ATICOM mission',
+          'Ethiopia business group',
+          'sustainable development',
+          'economic growth'
+        ]}
       />
       
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-aticom-blue to-aticom-green text-white overflow-hidden">
-        {content?.hero_image && (
+        {resolveHeroImageUrl(content?.hero_image) && (
           <div className="absolute inset-0">
             <img 
-              src={content.hero_image} 
+              src={resolveHeroImageUrl(content?.hero_image)} 
               alt="Vision & Mission Hero" 
               className="w-full h-full object-cover opacity-20"
             />

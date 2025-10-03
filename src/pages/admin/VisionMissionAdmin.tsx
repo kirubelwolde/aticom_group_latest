@@ -40,22 +40,24 @@ const VisionMissionAdmin = () => {
         .from('vision_mission')
         .select('*')
         .eq('active', true)
-        .single();
+        .order('updated_at', { ascending: false })
+        .limit(1);
 
       if (error && error.code !== 'PGRST116') throw error;
       
-      if (data) {
+      const row = Array.isArray(data) ? data[0] : (data as any);
+      if (row) {
         setContent({
-          id: data.id,
-          vision_title: data.vision_title || 'Our Vision',
-          vision_content: data.vision_content || '',
-          vision_points: data.vision_points || [],
-          mission_title: data.mission_title || 'Our Mission',
-          mission_content: data.mission_content || '',
-          mission_points: data.mission_points || [],
-          core_values: Array.isArray(data.core_values) ? data.core_values as { title: string; description: string }[] : [],
-          hero_image: (data as any).hero_image,
-          active: data.active
+          id: row.id,
+          vision_title: row.vision_title || 'Our Vision',
+          vision_content: row.vision_content || '',
+          vision_points: row.vision_points || [],
+          mission_title: row.mission_title || 'Our Mission',
+          mission_content: row.mission_content || '',
+          mission_points: row.mission_points || [],
+          core_values: Array.isArray(row.core_values) ? (row.core_values as { title: string; description: string }[]) : [],
+          hero_image: (row as any).hero_image,
+          active: row.active
         });
       } else {
         // Create default content if none exists
@@ -105,6 +107,14 @@ const VisionMissionAdmin = () => {
     
     setSaving(true);
     try {
+      // Deactivate all existing active rows if this content is active
+      if (content.active) {
+        await supabase
+          .from('vision_mission')
+          .update({ active: false })
+          .eq('active', true);
+      }
+
       const { error } = await supabase
         .from('vision_mission')
         .upsert({
