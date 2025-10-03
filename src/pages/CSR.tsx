@@ -47,7 +47,9 @@ const CSR = () => {
           .from('csr_content')
           .select('*')
           .eq('active', true)
-          .single();
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
 
         if (error && error.code !== 'PGRST116') {
           console.error('Error fetching CSR content:', error);
